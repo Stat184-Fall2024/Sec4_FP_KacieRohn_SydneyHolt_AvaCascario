@@ -21,14 +21,29 @@ execute:
   warning: false
 ---
 
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
+
+```{r}
+#| label: loadPackages
+
+packages <- c(
+)
+```
+
 ```{r}
 #| label: loadData
 
-read.csv(
+careerDataRaw <- read.csv(
   file = "career_change_prediction_dataset.csv",
   header = TRUE,
   sep = ","
 )
 ```
 
+```{r}
+#| label: tidyData
+
+careerDataTidy <- careerDataRaw[-c(13:23)]
+```
 
