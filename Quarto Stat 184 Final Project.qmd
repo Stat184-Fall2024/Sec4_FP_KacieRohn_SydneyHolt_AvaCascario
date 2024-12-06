@@ -1,6 +1,6 @@
 ---
 title: "Informative Title"
-author: "List All Authors"
+author: "Ava"
 date: "Dec. 3, 2024"
 date-modified: now
 format: 
