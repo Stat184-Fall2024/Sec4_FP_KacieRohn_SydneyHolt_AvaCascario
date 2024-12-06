@@ -21,6 +21,16 @@ execute:
   warning: false
 ---
 
+```{r}
+#| label: loadData
+
+read.csv(
+  file = "career_change_prediction_dataset.csv",
+  header = TRUE,
+  sep = ","
+)
+```
+
 ## Quarto
 
 Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
