@@ -1,7 +1,24 @@
 ---
-title: "Field of Study vs Job Occupation"
-format: pdf
-editor: visual
+title: "Informative Title"
+author: "List All Authors"
+date: "Dec. 3, 2024"
+date-modified: now
+format: 
+  pdf: 
+    toc: false
+    number-sections: true
+    number-depth: 5
+    fig-align: center
+    cap-location: top
+    geometry: 
+      - top=1in
+      - left=1in
+      - right=1in
+      - bottom=1in
+    colorlinks: true
+execute: 
+  echo: false
+  warning: false
 ---
 
 ## Quarto
