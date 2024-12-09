@@ -21,10 +21,20 @@ execute:
   warning: false
 ---
 
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
+
+```{r}
+#| label: loadPackages
+
+packages <- c("ggplot2", "tidyr", "dplyr"
+)
+```
+
 ```{r}
 #| label: loadData
 
-read.csv(
+careerDataRaw <- read.csv(
   file = "career_change_prediction_dataset.csv",
   header = TRUE,
   sep = ","
@@ -45,3 +55,61 @@ We are utilizing a data set that we found on Kaggle. Kaggle is a website focused
 
 # **FAIR and CARE Principles**
 
+```{r}
+#| label: tidyData
+
+careerDataTidy <- careerDataRaw[-c(13:23)]
+```
+
+```{r}
+#| label: summarizeData
+
+careerDataOccupationGender <- careerDataTidy %>%
+  select(
+    Current.Occupation, Gender
+  ) %>%
+  group_by(
+    Current.Occupation, Gender
+  ) %>%
+  summarize(
+    Count = n(), 
+    .groups = 'drop'
+  )
+   
+View(careerDataOccupationGender)
+
+```
+
+```{r}
+#| label: compareOccupationGender
+
+ggplot(
+  data = careerDataOccupationGender, 
+  aes(
+    x = Current.Occupation, 
+    y = Count,
+    fill = Gender
+  )
+) +
+  geom_bar(
+    stat = "identity", 
+    position = position_dodge(width = 0.8)
+  ) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Male" = "lightblue", 
+      "Female" = "pink"
+    ),
+    name = "Gender"
+  ) +
+  labs(
+    title = "Gender Distribution by Current Occupation", 
+    x = "Current Occupation", 
+    y = "Count"
+  ) +
+  theme(
+    axis.text.x = element_text(size = 6),
+    plot.title = element_text(hjust = 0.5)
+  )
+```
