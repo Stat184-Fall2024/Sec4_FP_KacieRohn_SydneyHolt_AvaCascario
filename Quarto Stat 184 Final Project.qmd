@@ -1,12 +1,12 @@
 ---
 title: "Informative Title"
-author: "Ava"
+author: "Ava Cascario, Sydney Holt, and Kacie Rohn"
 date: "Dec. 3, 2024"
 date-modified: now
 format: 
   pdf: 
     toc: false
-    number-sections: true
+    number-sections: false
     number-depth: 5
     fig-align: center
     cap-location: top
@@ -27,7 +27,7 @@ execute:
 ```{r}
 #| label: loadPackages
 
-packages <- c(
+packages <- c("ggplot2", "tidyr", "dplyr"
 )
 ```
 
@@ -41,9 +41,75 @@ careerDataRaw <- read.csv(
 )
 ```
 
+# **Research Topic: Field of Study vs Occupation**
+
+Our focus in conducting our study is to look at the association between field of study and actual job occupation. That is, to know if what an individual studied would have an affect on the job they get post-graduation. We will conduct our research by looking at different research questions and creating visualizations to represent the data that correlates with each question. We will then explore our outcomes and summarize our findings and how they connect back to our topic. 
+
+# **Research Questions**
+
+The first question we will explore is, how does your field of study correlate with your job occupation? We want to know what kind of association is found between the two factors, and if what an individual studied has an affect on the job they pursue. We would also like to explore, what the most commonly chosen occupations are based on the field of study? For example, if an individual was a software engineering major, what is the most commonly chosen job after graduation. Finally, we would like to explore the question, is there an association between gender and field of occupation? Not only will our research focus on field of study and occupation, but we would also like to analyze whether gender plays a role in this as well. 
+
+# **Provenance Of Our Data**
+
+We are utilizing a data set that we found on Kaggle. Kaggle is a website focused towards data scientists with a goal in helping others learn about data. The data was collected by Jahnavi Paliwal, a data science masters student at the University of San Francisco. The data has a usability score of 10.0 and is annually updated by Jahnvai, with the latest update being one month ago. This means the data is collected from a reliable source, and updated consistently to remain relevant. The data set is designed to help you predict whether individuals are likely to change their occupation based on their academic background, job experience, and other demographic factors. This can help you answer questions based on numerous aspects of the job industry including human resources, income, industry analysis, job markets, and job availability. This data set contains over 30,000 records each with 22 attributes. This data set constitutes a case as a single individual. 
+
+# **FAIR and CARE Principles**
+
 ```{r}
 #| label: tidyData
 
 careerDataTidy <- careerDataRaw[-c(13:23)]
 ```
 
+```{r}
+#| label: summarizeData
+
+careerDataOccupationGender <- careerDataTidy %>%
+  select(
+    Current.Occupation, Gender
+  ) %>%
+  group_by(
+    Current.Occupation, Gender
+  ) %>%
+  summarize(
+    Count = n(), 
+    .groups = 'drop'
+  )
+   
+View(careerDataOccupationGender)
+
+```
+
+```{r}
+#| label: compareOccupationGender
+
+ggplot(
+  data = careerDataOccupationGender, 
+  aes(
+    x = Current.Occupation, 
+    y = Count,
+    fill = Gender
+  )
+) +
+  geom_bar(
+    stat = "identity", 
+    position = position_dodge(width = 0.8)
+  ) +
+  theme_minimal() +
+  scale_fill_manual(
+    values = c(
+      "Male" = "lightblue", 
+      "Female" = "pink"
+    ),
+    name = "Gender"
+  ) +
+  labs(
+    title = "Gender Distribution by Current Occupation", 
+    x = "Current Occupation", 
+    y = "Count"
+  ) +
+  theme(
+    axis.text.x = element_text(size = 6),
+    plot.title = element_text(hjust = 0.5)
+  )
+```
