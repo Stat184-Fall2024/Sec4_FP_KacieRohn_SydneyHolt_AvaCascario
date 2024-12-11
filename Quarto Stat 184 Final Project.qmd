@@ -27,8 +27,10 @@ execute:
 ```{r}
 #| label: loadPackages
 
-packages <- c("ggplot2", "tidyr", "dplyr"
-)
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+
 ```
 
 ```{r}
@@ -56,15 +58,15 @@ We are utilizing a data set that we found on Kaggle. Kaggle is a website focused
 # **FAIR and CARE Principles**
 
 ```{r}
-#| label: tidyData
+#| label: cleanData
 
-careerDataTidy <- careerDataRaw[-c(13:23)]
+careerDataCleaned <- careerDataRaw[-c(13:23)]
 ```
 
 ```{r}
 #| label: summarizeData
 
-careerDataOccupationGender <- careerDataTidy %>%
+careerDataOccupationGender <- careerDataCleaned %>%
   select(
     Current.Occupation, Gender
   ) %>%
@@ -75,8 +77,6 @@ careerDataOccupationGender <- careerDataTidy %>%
     Count = n(), 
     .groups = 'drop'
   )
-   
-View(careerDataOccupationGender)
 
 ```
 
