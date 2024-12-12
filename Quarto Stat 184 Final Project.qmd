@@ -26,7 +26,7 @@ execute:
 
 ```{r}
 #| label: loadPackages
-
+# Load Packages
 library(ggplot2)
 library(dplyr)
 
@@ -34,7 +34,7 @@ library(dplyr)
 
 ```{r}
 #| label: loadData
-
+# Load Data
 careerDataRaw <- read.csv(
   file = "career_change_prediction_dataset.csv",
   header = TRUE,
@@ -58,13 +58,13 @@ We are utilizing a data set that we found on Kaggle. Kaggle is a website focused
 
 ```{r}
 #| label: cleanData
-
+# Clean data by removing rows
 careerDataCleaned <- careerDataRaw[-c(13:23)]
 ```
 
 ```{r}
 #| label: summarizeData
-
+# Summarize data for data visualization
 careerDataOccupationGender <- careerDataCleaned %>%
   select(
     Current.Occupation, Gender
@@ -81,7 +81,7 @@ careerDataOccupationGender <- careerDataCleaned %>%
 
 ```{r}
 #| label: compareOccupationGender
-
+# Create bar chart displaying Gender distribution by Current Occupation
 ggplot(
   data = careerDataOccupationGender, 
   aes(
@@ -112,3 +112,24 @@ ggplot(
     plot.title = element_text(hjust = 0.5, size = 16)
   )
 ```
+
+```{r}
+#| label: fiveNumberSummary
+# Summarize Job Satisfaction by Field of Study and Current Occupation
+jobSatisfactionSummary <- careerDataCleaned %>%
+  group_by(Field.of.Study, Current.Occupation) %>%
+  summarize(
+    count = n(), 
+    min = min(Job.Satisfaction), 
+    Q1 = quantile(Job.Satisfaction, 0.25), 
+    median = median(Job.Satisfaction), 
+    Q3 = quantile(Job.Satisfaction, 0.75), 
+    max = max(Job.Satisfaction), 
+    medianAbsoluteDeviation = mad(Job.Satisfaction), 
+    sampleArithmeticMean = mean(Job.Satisfaction), 
+    SampleArithmeticSD = sd(Job.Satisfaction), 
+  )
+
+print(jobSatisfactionSummary)
+```
+
