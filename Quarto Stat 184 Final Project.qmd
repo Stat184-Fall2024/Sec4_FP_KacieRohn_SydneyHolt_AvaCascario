@@ -28,7 +28,6 @@ execute:
 #| label: loadPackages
 
 library(ggplot2)
-library(tidyverse)
 library(dplyr)
 
 ```
@@ -77,10 +76,6 @@ careerDataOccupationGender <- careerDataCleaned %>%
     Count = n(), 
     .groups = 'drop'
   )
-<<<<<<< HEAD
-=======
-   
->>>>>>> main
 
 ```
 
@@ -113,7 +108,7 @@ ggplot(
     y = "Count"
   ) +
   theme(
-    axis.text.x = element_text(size = 6),
-    plot.title = element_text(hjust = 0.5)
+    axis.text.x = element_text(size = 7, angle = 45, hjust = 1),
+    plot.title = element_text(hjust = 0.5, size = 16)
   )
 ```
