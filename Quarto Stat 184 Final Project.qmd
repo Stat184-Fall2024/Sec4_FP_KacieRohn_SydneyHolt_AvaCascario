@@ -42,9 +42,19 @@ careerDataRaw <- read.csv(
 )
 ```
 
+```{r}
+#| label: loadNewData
+
+shoppingTrendsRaw <- read.csv(
+  file = "shopping_trends.csv", 
+  header = TRUE, 
+  sep = ","
+)
+```
+
 # **Research Topic: Field of Study vs Occupation**
 
-Our focus in conducting our study is to look at the association between field of study and actual job occupation. That is, to know if what an individual studied would have an affect on the job they get post-graduation. We will conduct our research by looking at different research questions and creating visualizations to represent the data that correlates with each question. We will then explore our outcomes and summarize our findings and how they connect back to our topic. 
+Our focus in conducting our study is to look at the association between field of study and actual job occupation. That is, to know if what an individual studied in college would have an affect on the job they get post-graduation. We will conduct our research by looking at different research questions and creating visualizations to represent the data that correlates with each question. We will then explore our outcomes and summarize our findings and how they connect back to our topic. 
 
 # **Research Questions**
 
