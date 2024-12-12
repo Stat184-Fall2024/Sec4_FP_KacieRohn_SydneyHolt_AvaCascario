@@ -32,111 +32,16 @@ library(dplyr)
 
 ```
 
-```{r}
-#| label: loadData
-# Load Data
-careerDataRaw <- read.csv(
-  file = "career_change_prediction_dataset.csv",
-  header = TRUE,
-  sep = ","
-)
-```
-
-
 # **Research Topic: Field of Study vs Occupation**
-
-Our focus in conducting our study is to look at the association between field of study and actual job occupation. That is, to know if what an individual studied in college would have an affect on the job they get post-graduation. We will conduct our research by looking at different research questions and creating visualizations to represent the data that correlates with each question. We will then explore our outcomes and summarize our findings and how they connect back to our topic. 
 
 # **Research Questions**
 
-The first question we will explore is, how does your field of study correlate with your job occupation? We want to know what kind of association is found between the two factors, and if what an individual studied has an affect on the job they pursue. We would also like to explore, what the most commonly chosen occupations are based on the field of study? For example, if an individual was a software engineering major, what is the most commonly chosen job after graduation. Finally, we would like to explore the question, is there an association between gender and field of occupation? Not only will our research focus on field of study and occupation, but we would also like to analyze whether gender plays a role in this as well. 
-
 # **Provenance Of Our Data**
-
-We are utilizing a data set that we found on Kaggle. Kaggle is a website focused towards data scientists with a goal in helping others learn about data. The data was collected by Jahnavi Paliwal, a data science masters student at the University of San Francisco. The data has a usability score of 10.0 and is annually updated by Jahnvai, with the latest update being one month ago. This means the data is collected from a reliable source, and updated consistently to remain relevant. The data set is designed to help you predict whether individuals are likely to change their occupation based on their academic background, job experience, and other demographic factors. This can help you answer questions based on numerous aspects of the job industry including human resources, income, industry analysis, job markets, and job availability. This data set contains over 30,000 records each with 22 attributes. This data set constitutes a case as a single individual. 
 
 # **FAIR and CARE Principles**
 
 ```{r}
-#| label: cleanData
-# Clean data by removing rows
-careerDataCleaned <- careerDataRaw[-c(13:23)]
-```
-
-```{r}
-#| label: summarizeData
-# Summarize data for data visualization
-careerDataOccupationGender <- careerDataCleaned %>%
-  select(
-    Current.Occupation, Gender
-  ) %>%
-  group_by(
-    Current.Occupation, Gender
-  ) %>%
-  summarize(
-    Count = n(), 
-    .groups = 'drop'
-  )
-
-```
-
-```{r}
-#| label: compareOccupationGender
-# Create bar chart displaying Gender distribution by Current Occupation
-ggplot(
-  data = careerDataOccupationGender, 
-  aes(
-    x = Current.Occupation, 
-    y = Count,
-    fill = Gender
-  )
-) +
-  geom_bar(
-    stat = "identity", 
-    position = position_dodge(width = 0.8)
-  ) +
-  theme_minimal() +
-  scale_fill_manual(
-    values = c(
-      "Male" = "lightblue", 
-      "Female" = "pink"
-    ),
-    name = "Gender"
-  ) +
-  labs(
-    title = "Gender Distribution by Current Occupation", 
-    x = "Current Occupation", 
-    y = "Count"
-  ) +
-  theme(
-    axis.text.x = element_text(size = 7, angle = 45, hjust = 1),
-    plot.title = element_text(hjust = 0.5, size = 16)
-  )
-```
-
-```{r}
-#| label: fiveNumberSummary
-# Summarize Job Satisfaction by Field of Study and Current Occupation
-jobSatisfactionSummary <- careerDataCleaned %>%
-  group_by(Field.of.Study, Current.Occupation) %>%
-  summarize(
-    count = n(), 
-    min = min(Job.Satisfaction), 
-    Q1 = quantile(Job.Satisfaction, 0.25), 
-    median = median(Job.Satisfaction), 
-    Q3 = quantile(Job.Satisfaction, 0.75), 
-    max = max(Job.Satisfaction), 
-    medianAbsoluteDeviation = mad(Job.Satisfaction), 
-    sampleArithmeticMean = mean(Job.Satisfaction), 
-    SampleArithmeticSD = sd(Job.Satisfaction), 
-  )
-
-print(jobSatisfactionSummary)
-```
-
-
-```{r}
-#| label: loadNewData
+#| label: loadData
 
 shoppingTrendsRaw <- read.csv(
   file = "shopping_trends.csv", 
@@ -148,54 +53,8 @@ View(shoppingTrendsRaw)
 ```
 
 ```{r}
+#| label: summarizeData
 
-locationSeasonData <- shoppingTrendsRaw %>%
-  group_by(
-    Location, 
-    Season
-  ) %>%
-  summarize(
-    Total.Sales = sum(Purchase.Amount..USD.),
-    .groups = "drop"
-  )
-
-locationSeasonCounts <- shoppingTrendsRaw %>%
-  group_by(
-    Location, 
-    Season
-  ) %>%
-  summarize(
-    Count = n(),
-    .groups = "drop"
-  )
-
-```
-
-```{r}
-
-ggplot(
-  locationSeasonCounts, 
-  aes(
-    x = Season, 
-    y = Count,
-    fill = Location
-  )
-) +
-  geom_bar(
-    stat = "identity", 
-    position = "dodge"
-  ) +
-  labs(
-    title = "Sales by Location and Season", 
-    x = "Season", 
-    y = "Number of Sales", 
-    fill = "Location"
-  ) +
-  theme_minimal()
-
-```
-
-```{r}
 itemPurchasedData <- shoppingTrendsRaw %>%
   group_by(
     Location, 
@@ -208,13 +67,78 @@ itemPurchasedData <- shoppingTrendsRaw %>%
   )
 ```
 
+
 ```{r}
+#| label: groupStatesByRegion
+
+stateToRegion <- c(
+  "Maine" = "Northeast", 
+  "New Hampshire" = "Northeast", 
+  "Vermont" = "Northeast", 
+  "Massachusetts" = "Northeast",
+  "Rhode Island" = "Northeast",
+  "Connecticut" = "Northeast",
+  "New York" = "Northeast",
+  "New Jersey" = "Northeast",
+  "Pennsylvania" = "Northeast",
+  "Delaware" = "South",
+  "Maryland" = "South",
+  "Virginia" = "South",
+  "North Carolina" = "South",
+  "South Carolina" = "South",
+  "Georgia" = "South",
+  "Florida" = "South",
+  "West Virginia" = "South",
+  "Kentucky" = "South",
+  "Tennessee" = "South",
+  "Alabama" = "South",
+  "Mississippi" = "South",
+  "Arkansas" = "South",
+  "Louisiana" = "South",
+  "Oklahoma" = "South",
+  "Texas" = "South",
+  "Indiana" = "Midwest", 
+  "Illinois" = "Midwest",
+  "Michigan" = "Midwest",
+  "Ohio" = "Midwest",
+  "Wisconsin" = "Midwest",
+  "Missouri" = "Midwest",
+  "Iowa" = "Midwest",
+  "Minnesota" = "Midwest",
+  "North Dakota" = "Midwest",
+  "South Dakota" = "Midwest",
+  "Nebraska" = "Midwest",
+  "Kansas" = "Midwest",
+  "Montana" = "West",
+  "Wyoming" = "West",
+  "Colorado" = "West",
+  "Idaho" = "West",
+  "Nevada" = "West",
+  "Utah" = "West",
+  "Arizona" = "West",
+  "New Mexico" = "West",
+  "Washington" = "West",
+  "Oregon" = "West",
+  "California" = "West",
+  "Alaska" = "West",
+  "Hawaii" = "West"
+)
+
+itemPurchasedData <- itemPurchasedData %>%
+  mutate(
+    Region = stateToRegion[Location]
+  )
+```
+
+```{r}
+#| label: visualizeItemsByRegionAndSeason
+
 ggplot(
   itemPurchasedData, 
   aes(
     x = Item.Purchased,
     y = Item.Count, 
-    fill = Location
+    fill = Region
   )
 ) +
   geom_bar(
@@ -222,13 +146,43 @@ ggplot(
     position = "dodge"
   ) +
   facet_wrap(
-    ~Season
+    ~Season, 
+    scales = "free_x", 
+    ncol = 1, 
+    strip.position = "top"
   ) +
   labs(
-    title = "Items Bought by Location and Season", 
+    title = "Items Bought by Region and Season", 
     x = "Item", 
     y = "Number of Items Bought", 
-    fill = "Location"
+    fill = "Region"
   ) +
-  theme_minimal()
+  scale_fill_manual(
+    values = c(
+      "Northeast" = "#779ECB", 
+      "South" = "#486856", 
+      "Midwest" = "#FFD580", 
+      "West" = "#FF7F7F"
+    )
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, 
+      hjust = 1
+    ), 
+    legend.position = "right", 
+    strip.text = element_text(size = 12),
+    plot.title = element_text(
+      size = 18, 
+      hjust = 0.5, 
+      face = "bold"
+    ), 
+    plot.margin = margin(20, 20, 20, 20), 
+    axis.title.y = element_text(
+      margin = margin(r = 10)
+    )
+  )
+
 ```
+
