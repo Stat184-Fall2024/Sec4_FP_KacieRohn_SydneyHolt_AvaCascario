@@ -42,15 +42,6 @@ careerDataRaw <- read.csv(
 )
 ```
 
-```{r}
-#| label: loadNewData
-
-shoppingTrendsRaw <- read.csv(
-  file = "shopping_trends.csv", 
-  header = TRUE, 
-  sep = ","
-)
-```
 
 # **Research Topic: Field of Study vs Occupation**
 
@@ -143,3 +134,101 @@ jobSatisfactionSummary <- careerDataCleaned %>%
 print(jobSatisfactionSummary)
 ```
 
+
+```{r}
+#| label: loadNewData
+
+shoppingTrendsRaw <- read.csv(
+  file = "shopping_trends.csv", 
+  header = TRUE, 
+  sep = ","
+)
+
+View(shoppingTrendsRaw)
+```
+
+```{r}
+
+locationSeasonData <- shoppingTrendsRaw %>%
+  group_by(
+    Location, 
+    Season
+  ) %>%
+  summarize(
+    Total.Sales = sum(Purchase.Amount..USD.),
+    .groups = "drop"
+  )
+
+locationSeasonCounts <- shoppingTrendsRaw %>%
+  group_by(
+    Location, 
+    Season
+  ) %>%
+  summarize(
+    Count = n(),
+    .groups = "drop"
+  )
+
+```
+
+```{r}
+
+ggplot(
+  locationSeasonCounts, 
+  aes(
+    x = Season, 
+    y = Count,
+    fill = Location
+  )
+) +
+  geom_bar(
+    stat = "identity", 
+    position = "dodge"
+  ) +
+  labs(
+    title = "Sales by Location and Season", 
+    x = "Season", 
+    y = "Number of Sales", 
+    fill = "Location"
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+itemPurchasedData <- shoppingTrendsRaw %>%
+  group_by(
+    Location, 
+    Season, 
+    Item.Purchased
+  ) %>%
+  summarize(
+    Item.Count = n(), 
+    .groups = "drop"
+  )
+```
+
+```{r}
+ggplot(
+  itemPurchasedData, 
+  aes(
+    x = Item.Purchased,
+    y = Item.Count, 
+    fill = Location
+  )
+) +
+  geom_bar(
+    stat = "Identity", 
+    position = "dodge"
+  ) +
+  facet_wrap(
+    ~Season
+  ) +
+  labs(
+    title = "Items Bought by Location and Season", 
+    x = "Item", 
+    y = "Number of Items Bought", 
+    fill = "Location"
+  ) +
+  theme_minimal()
+```
