@@ -26,33 +26,29 @@ execute:
 
 ```{r}
 #| label: loadPackages
-
+# Load Packages
 library(ggplot2)
-library(tidyverse)
 library(dplyr)
 
-
 ```
+
+# **Research Topic: Field of Study vs Occupation**
+
+# **Research Questions**
+
+# **Provenance Of Our Data**
+
+# **FAIR and CARE Principles**
 
 ```{r}
 #| label: loadData
-
-careerDataRaw <- read.csv(
-  file = "career_change_prediction_dataset.csv",
-  header = TRUE,
-  sep = ","
-)
-```
-
-```{r}
-#| label: loadNewData
 
 shoppingTrendsRaw <- read.csv(
   file = "shopping_trends.csv", 
   header = TRUE, 
   sep = ","
 )
-```
+
 
 # **Research Topic: Latest Customer Shopping Trends**
 
@@ -72,56 +68,142 @@ We are utilizing a data set that we found on Kaggle. Kaggle is a website focused
 #| label: cleanData
 
 careerDataCleaned <- careerDataRaw[-c(13:23)]
+=======
+View(shoppingTrendsRaw)
+
 ```
 
 ```{r}
 #| label: summarizeData
 
-careerDataOccupationGender <- careerDataCleaned %>%
-  select(
-    Current.Occupation, Gender
-  ) %>%
+itemPurchasedData <- shoppingTrendsRaw %>%
   group_by(
-    Current.Occupation, Gender
+    Location, 
+    Season, 
+    Item.Purchased
   ) %>%
   summarize(
-    Count = n(), 
-    .groups = 'drop'
+    Item.Count = n(), 
+    .groups = "drop"
   )
-   
+```
 
+
+```{r}
+#| label: groupStatesByRegion
+
+stateToRegion <- c(
+  "Maine" = "Northeast", 
+  "New Hampshire" = "Northeast", 
+  "Vermont" = "Northeast", 
+  "Massachusetts" = "Northeast",
+  "Rhode Island" = "Northeast",
+  "Connecticut" = "Northeast",
+  "New York" = "Northeast",
+  "New Jersey" = "Northeast",
+  "Pennsylvania" = "Northeast",
+  "Delaware" = "South",
+  "Maryland" = "South",
+  "Virginia" = "South",
+  "North Carolina" = "South",
+  "South Carolina" = "South",
+  "Georgia" = "South",
+  "Florida" = "South",
+  "West Virginia" = "South",
+  "Kentucky" = "South",
+  "Tennessee" = "South",
+  "Alabama" = "South",
+  "Mississippi" = "South",
+  "Arkansas" = "South",
+  "Louisiana" = "South",
+  "Oklahoma" = "South",
+  "Texas" = "South",
+  "Indiana" = "Midwest", 
+  "Illinois" = "Midwest",
+  "Michigan" = "Midwest",
+  "Ohio" = "Midwest",
+  "Wisconsin" = "Midwest",
+  "Missouri" = "Midwest",
+  "Iowa" = "Midwest",
+  "Minnesota" = "Midwest",
+  "North Dakota" = "Midwest",
+  "South Dakota" = "Midwest",
+  "Nebraska" = "Midwest",
+  "Kansas" = "Midwest",
+  "Montana" = "West",
+  "Wyoming" = "West",
+  "Colorado" = "West",
+  "Idaho" = "West",
+  "Nevada" = "West",
+  "Utah" = "West",
+  "Arizona" = "West",
+  "New Mexico" = "West",
+  "Washington" = "West",
+  "Oregon" = "West",
+  "California" = "West",
+  "Alaska" = "West",
+  "Hawaii" = "West"
+)
+
+itemPurchasedData <- itemPurchasedData %>%
+  mutate(
+    Region = stateToRegion[Location]
+  )
 ```
 
 ```{r}
-#| label: compareOccupationGender
+#| label: visualizeItemsByRegionAndSeason
 
 ggplot(
-  data = careerDataOccupationGender, 
+  itemPurchasedData, 
   aes(
-    x = Current.Occupation, 
-    y = Count,
-    fill = Gender
+    x = Item.Purchased,
+    y = Item.Count, 
+    fill = Region
   )
 ) +
   geom_bar(
-    stat = "identity", 
-    position = position_dodge(width = 0.8)
+    stat = "Identity", 
+    position = "dodge"
   ) +
-  theme_minimal() +
-  scale_fill_manual(
-    values = c(
-      "Male" = "lightblue", 
-      "Female" = "pink"
-    ),
-    name = "Gender"
+  facet_wrap(
+    ~Season, 
+    scales = "free_x", 
+    ncol = 1, 
+    strip.position = "top"
   ) +
   labs(
-    title = "Gender Distribution by Current Occupation", 
-    x = "Current Occupation", 
-    y = "Count"
+    title = "Items Bought by Region and Season", 
+    x = "Item", 
+    y = "Number of Items Bought", 
+    fill = "Region"
   ) +
+  scale_fill_manual(
+    values = c(
+      "Northeast" = "#779ECB", 
+      "South" = "#486856", 
+      "Midwest" = "#FFD580", 
+      "West" = "#FF7F7F"
+    )
+  ) +
+  theme_minimal() +
   theme(
-    axis.text.x = element_text(size = 6),
-    plot.title = element_text(hjust = 0.5)
+    axis.text.x = element_text(
+      angle = 45, 
+      hjust = 1
+    ), 
+    legend.position = "right", 
+    strip.text = element_text(size = 12),
+    plot.title = element_text(
+      size = 18, 
+      hjust = 0.5, 
+      face = "bold"
+    ), 
+    plot.margin = margin(20, 20, 20, 20), 
+    axis.title.y = element_text(
+      margin = margin(r = 10)
+    )
   )
+
 ```
+
