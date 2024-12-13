@@ -48,10 +48,8 @@ shoppingTrendsRaw <- read.csv(
   header = TRUE, 
   sep = ","
 )
+```
 
-<<<<<<< Updated upstream
-View(shoppingTrendsRaw)
-=======
 ```{r}
 typeReviews <- shoppingTrendsRaw %>%
   select(
@@ -72,6 +70,7 @@ ggplot(
 ) +
   geom_boxplot()
 ```
+
 ```{r}
 shoppingSummary <- lm(formula = Purchase.Amount..USD. ~ Category, data = shoppingTrendsRaw)
 summary(shoppingSummary)
@@ -122,12 +121,6 @@ We are utilizing a data set that we found on Kaggle. Kaggle is a website focused
 
 # **FAIR and CARE Principles**
 
-```{r}
-#| label: cleanData
-
-careerDataCleaned <- careerDataRaw[-c(13:23)]
->>>>>>> Stashed changes
-```
 
 ```{r}
 #| label: summarizeData
