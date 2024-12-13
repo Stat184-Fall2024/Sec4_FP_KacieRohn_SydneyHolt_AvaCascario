@@ -67,7 +67,6 @@ itemPurchasedData <- shoppingTrendsRaw %>%
   )
 ```
 
-
 ```{r}
 #| label: groupStatesByRegion
 
