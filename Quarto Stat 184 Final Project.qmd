@@ -76,37 +76,6 @@ shoppingSummary <- lm(formula = Purchase.Amount..USD. ~ Category, data = shoppin
 summary(shoppingSummary)
 ```
 
-```{r}
-ageGenderItems <- shoppingTrendsRaw %>%
-  select(
-    Gender, Age, Item.Purchased
-  ) %>%
-  group_by(
-    Age, Gender, Item.Purchased
-  ) %>%
-  summarize(
-    Count = n(),
-  )
-```
-
-
-```{r}
-ggplot(
-  data = ageGenderItems,
-  aes(
-    x = Item.Purchased,
-    y = Count,
-    fill = Gender
-  )
-) +
-  geom_bar(
-    stat = "identity",
-    position = position_dodge(width = 5)
-  ) +
-  theme(
-    axis.text.x = element_text(angle = 90, hjust = 1)
-  )
-```
 # **Research Topic: Field of Study vs Occupation**
 
 Our focus in conducting our study is to look at the association between field of study and actual job occupation. That is, to know if what an individual studied in college would have an affect on the job they get post-graduation. We will conduct our research by looking at different research questions and creating visualizations to represent the data that correlates with each question. We will then explore our outcomes and summarize our findings and how they connect back to our topic. 
