@@ -21,26 +21,55 @@ execute:
   warning: false
 ---
 
-```{r} codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
 
 ```{r}
-#| label: loadPackages
-# Load Packages
+#| label: load_packages
+# Load necessary packages ----
 library(ggplot2)
 library(dplyr)
-
+library(knitr)
+library(tinytex)
 ```
 
 
 ```{r}
-#| label: loadData
-
-shoppingTrendsRaw <- read.csv(
+#| label: load_data
+# Load shopping trends dataset ----
+shopping_trends_raw <- read.csv(
   file = "shopping_trends.csv", 
   header = TRUE, 
   sep = ","
 )
+```
+
+```{r}
+#| label: clean_column_names
+# Clean column names for consistency ----
+shopping_trends_clean <- shopping_trends_raw %>%
+  rename(
+    customer_id = "Customer.ID", 
+    age = "Age", 
+    gender = "Gender", 
+    item_purchased = "Item.Purchased", 
+    category = "Category", 
+    purchase_amount_usd = "Purchase.Amount..USD.", 
+    location = "Location", 
+    size = "Size", 
+    color = "Color", 
+    season = "Season", 
+    review_rating = "Review.Rating", 
+    subscription_status = "Subscription.Status", 
+    payment_method = "Payment.Method", 
+    shipping_type = "Shipping.Type", 
+    discount_applied = "Discount.Applied", 
+    promo_code_used = "Promo.Code.Used", 
+    previous_purchases = "Previous.Purchases", 
+    preferred_payment_method = "Preferred.Payment.Method", 
+    frequency_of_purchases = "Frequency.of.Purchases"
+  )
+
 ```
 
 
@@ -63,52 +92,85 @@ The data we are utilizing meets the FAIR principles. The data is **findable**, a
 
 
 ```{r}
-typeReviews <- shoppingTrendsRaw %>%
+#| label: select_data
+# Group data by gender and review rating ----
+type_reviews <- shopping_trends_clean %>%
   select(
-    Gender, Review.Rating
+    gender, 
+    review_rating
   ) %>%
   group_by(
-    Gender, Review.Rating
+    gender, 
+    review_rating
   )
 ```
 
 ```{r}
+#| label: vizualize_gender_review
+# Boxplot of review ratings by gender ----
 ggplot(
-  data = typeReviews,
+  data = type_reviews,
   aes(
-    x = Gender,
-    y = Review.Rating
+    x = gender,
+    y = review_rating
   )
 ) +
   geom_boxplot()
 ```
 
 ```{r}
-shoppingSummary <- lm(formula = Purchase.Amount..USD. ~ Category, data = shoppingTrendsRaw)
-summary(shoppingSummary)
+#| label: summary_table
+# Display regression summary for purchase amount by category ----
+shopping_summary <- lm(formula = purchase_amount_usd ~ category, data = shopping_trends_clean)
+shopping_summary_model <- summary(shopping_summary)
+
+shopping_summary_model$coefficients %>%
+  knitr::kable()
+```
+
+```{r} 
+#| label: summarize_purchase_data
+# Summary statistics for purchase amount by category ----
+shopping_summary <- shopping_trends_clean %>%
+  select(category, purchase_amount_usd) %>%
+  group_by(category) %>%
+  summarize(
+    count = n(), 
+    min = min(purchase_amount_usd), 
+    Q1 = quantile(purchase_amount_usd, 0.25), 
+    median = median(purchase_amount_usd), 
+    Q1 = quantile(purchase_amount_usd, 0.75), 
+    max = max(purchase_amount_usd), 
+    mad = mad(purchase_amount_usd), 
+    mean = mean(purchase_amount_usd), 
+    sd = sd(purchase_amount_usd)
+  )
+
+shopping_summary %>%
+  knitr::kable() 
 ```
 
 
 ```{r}
-#| label: summarizeData
-
-itemPurchasedData <- shoppingTrendsRaw %>%
+#| label: group_by_location_season_item
+# Group data by location, season, and item ----
+item_purchased_data <- shopping_trends_clean %>%
   group_by(
-    Location, 
-    Season, 
-    Item.Purchased
+    location, 
+    season, 
+    item_purchased
   ) %>%
   summarize(
-    Item.Count = n(), 
+    item_count = n(), 
     .groups = "drop"
   )
 ```
 
-
 ```{r}
-#| label: groupStatesByRegion
-
-stateToRegion <- c(
+#| label: map_state_to_region
+# Map U.S. states to regions ----
+# Group States by Region
+state_to_region <- c(
   "Maine" = "Northeast", 
   "New Hampshire" = "Northeast", 
   "Vermont" = "Northeast", 
@@ -160,66 +222,110 @@ stateToRegion <- c(
   "Alaska" = "West",
   "Hawaii" = "West"
 )
+```
 
-itemPurchasedData <- itemPurchasedData %>%
+```{r}
+#| label: add_region_column
+# Add region column based on location ----
+item_purchased_data <- item_purchased_data %>%
   mutate(
-    Region = stateToRegion[Location]
+    region = state_to_region[location]
   )
 ```
 
 ```{r}
-#| label: visualizeItemsByRegionAndSeason
+#| label: filter_by_season
+# Filter data by season ----
+spring_data <- item_purchased_data %>%
+  filter(season == "Spring")
 
+summer_data <- item_purchased_data %>%
+  filter(season == "Summer")
+
+fall_data <- item_purchased_data %>%
+  filter(season == "Fall")
+
+winter_data <- item_purchased_data %>%
+  filter(season == "Winter")
+```
+
+
+```{r}
+#| label: visualize_items_by_region_and_season
+# Visualize data by region and season ----
+plot_items_by_season <- function(
+    item_purchased_data, 
+    season_name
+    ) {
 ggplot(
-  itemPurchasedData, 
+  item_purchased_data, 
   aes(
-    x = Item.Purchased,
-    y = Item.Count, 
-    fill = Region
+    x = item_purchased,
+    y = item_count, 
+    fill = region
   )
 ) +
   geom_bar(
-    stat = "Identity", 
-    position = "dodge"
+    stat = "identity", 
+    position = position_dodge(width = 0.8), 
+    width = 0.6
   ) +
-  facet_wrap(
-    ~Season, 
-    scales = "free_x", 
-    ncol = 1, 
-    strip.position = "top"
+  scale_x_discrete(
+    expand = expansion(add = c(0.5, 0.5))
   ) +
   labs(
-    title = "Items Bought by Region and Season", 
+    title = paste(
+      "Items Bought by Region", 
+      season_name
+    ),  
     x = "Item", 
     y = "Number of Items Bought", 
     fill = "Region"
   ) +
   scale_fill_manual(
     values = c(
-      "Northeast" = "#779ECB", 
-      "South" = "#486856", 
-      "Midwest" = "#FFD580", 
-      "West" = "#FF7F7F"
+      "Northeast" = "#8DA0CB", 
+      "South" = "#FC8D62", 
+      "Midwest" = "#66C2A5", 
+      "West" = "#E78AC3"
     )
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 14) +
   theme(
+    panel.grid.major = element_blank(), 
     axis.text.x = element_text(
       angle = 45, 
-      hjust = 1
+      hjust = 1, 
+      size = 8
     ), 
-    legend.position = "right", 
-    strip.text = element_text(size = 12),
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10),
+    legend.position = "top",
+    legend.text = element_text(size = 6),
+    legend.title = element_text(size = 8), 
+    legend.key.size = unit(0.5, "cm"),
     plot.title = element_text(
-      size = 18, 
+      size = 16, 
       hjust = 0.5, 
       face = "bold"
     ), 
-    plot.margin = margin(20, 20, 20, 20), 
-    axis.title.y = element_text(
-      margin = margin(r = 10)
-    )
+    plot.margin = margin(15, 15, 15, 15)
   )
+}
+```
+
+```{r}
+#| label: create_each_plot
+# Generate and display plots for each season ----
+spring_plot <- plot_items_by_season(spring_data, "Spring")
+summer_plot <- plot_items_by_season(summer_data, "Summer")
+fall_plot <- plot_items_by_season(fall_data, "Fall")
+winter_plot <- plot_items_by_season(winter_data, "Winter")
+
+print(spring_plot)
+print(summer_plot)
+print(fall_plot)
+print(winter_plot)
 
 ```
 
