@@ -32,13 +32,6 @@ library(dplyr)
 
 ```
 
-# **Research Topic: Field of Study vs Occupation**
-
-# **Research Questions**
-
-# **Provenance Of Our Data**
-
-# **FAIR and CARE Principles**
 
 ```{r}
 #| label: loadData
@@ -48,6 +41,7 @@ shoppingTrendsRaw <- read.csv(
   header = TRUE, 
   sep = ","
 )
+```
 
 
 # **Research Topic: Latest Customer Shopping Trends**
@@ -62,16 +56,9 @@ The first research question we will explore is, how do different demographics su
 
 We are utilizing a data set that we found on Kaggle. Kaggle is a website focused towards data scientists with a goal in helping others learn about data. 
 
-# **FAIR and CARE Principles**
+# **FAIR and CARE Principles*
 
-```{r}
-#| label: cleanData
 
-careerDataCleaned <- careerDataRaw[-c(13:23)]
-=======
-View(shoppingTrendsRaw)
-
-```
 
 ```{r}
 #| label: summarizeData
