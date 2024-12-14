@@ -54,7 +54,7 @@ The first research question we will explore is, how do different demographics su
 
 # **Provenance Of Our Data**
 
-We are utilizing a data set that we found on Kaggle. Kaggle is a website focused towards data scientists with a goal in helping others learn about data. 
+We are utilizing a data set that we found on Kaggle. Kaggle is a website focused towards data scientists with a goal in helping others learn about data.  
 
 # **FAIR and CARE Principles*
 
