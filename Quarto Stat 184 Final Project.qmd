@@ -60,18 +60,22 @@ We are utilizing a data set that we found on Kaggle. Kaggle is a website focused
 
 
 ```{r}
-typeReviews <- shoppingTrendsRaw %>%
+#| label: select_data
+type_reviews <- shopping_trends_raw %>%
   select(
-    Gender, Review.Rating
+    Gender, 
+    Review.Rating
   ) %>%
   group_by(
-    Gender, Review.Rating
+    Gender, 
+    Review.Rating
   )
 ```
 
 ```{r}
+#| label: vizualization_for_gender_review
 ggplot(
-  data = typeReviews,
+  data = type_reviews,
   aes(
     x = Gender,
     y = Review.Rating
@@ -80,9 +84,10 @@ ggplot(
   geom_boxplot()
 ```
 
-```{r}
-shoppingSummary <- lm(formula = Purchase.Amount..USD. ~ Category, data = shoppingTrendsRaw)
-summary(shoppingSummary)
+```{r} 
+#| label: summaraize_data
+shopping_summary <- lm(formula = Purchase.Amount..USD. ~ Category, data = shopping_trends_raw)
+summary(shopping_summary)
 ```
 
 # **Research Topic: Field of Study vs Occupation**
@@ -224,7 +229,7 @@ ggplot(
   geom_bar(
     stat = "Identity", 
     position = position_dodge(width = 0.8), 
-    width = 0.8
+    width = 0.6
   ) +
   scale_x_discrete(
     expand = expansion(add = c(0.5, 0.5))
@@ -240,24 +245,24 @@ ggplot(
   ) +
   scale_fill_manual(
     values = c(
-      "Northeast" = "#779ECB", 
-      "South" = "#486856", 
-      "Midwest" = "#FFD580", 
-      "West" = "#FF7F7F"
+      "Northeast" = "#8DA0CB", 
+      "South" = "#FC8D62", 
+      "Midwest" = "#66C2A5", 
+      "West" = "#E78AC3"
     )
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 14) +
   theme(
     panel.grid.major = element_blank(), 
     panel.grid.minor = element_blank(), 
     axis.text.x = element_text(
       angle = 45, 
       hjust = 1, 
-      size = 10
+      size = 8
     ), 
     legend.position = "top", 
     plot.title = element_text(
-      size = 18, 
+      size = 16, 
       hjust = 0.5, 
       face = "bold"
     ), 
