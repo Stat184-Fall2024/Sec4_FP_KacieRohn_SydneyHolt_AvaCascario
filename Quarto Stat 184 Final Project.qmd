@@ -392,9 +392,12 @@ summary_by_gender_freq <- shopping_trends_clean %>%
 
 ```{r}
 #| label: plot_data
+# Filter out N/A frequency of purchases values ----
+summary_by_gender_freq_filtered <- summary_by_gender_freq %>%
+  filter(frequency_of_purchases != "n/a")
 # Visualize average previous purchases by gender and frequency of purchases ----
 ggplot(
-  summary_by_gender_freq, 
+  summary_by_gender_freq_filtered, 
   aes(
     x = frequency_of_purchases,
     y = average_previous_purchases,
