@@ -29,7 +29,6 @@ execute:
 # Load necessary packages ----
 library(ggplot2)
 library(dplyr)
-library(kableExtra)
 library(knitr)
 library(tinytex)
 ```
@@ -37,7 +36,7 @@ library(tinytex)
 
 ```{r}
 #| label: load_data
-# Load Data ----
+# Load shopping trends dataset ----
 shopping_trends_raw <- read.csv(
   file = "shopping_trends.csv", 
   header = TRUE, 
@@ -47,6 +46,7 @@ shopping_trends_raw <- read.csv(
 
 ```{r}
 #| label: clean_column_names
+# Clean column names for consistency ----
 shopping_trends_clean <- shopping_trends_raw %>%
   rename(
     customer_id = "Customer.ID", 
@@ -93,6 +93,7 @@ The data we are utilizing meets the FAIR principles. The data is **findable**, a
 
 ```{r}
 #| label: select_data
+# Group data by gender and review rating ----
 type_reviews <- shopping_trends_clean %>%
   select(
     gender, 
@@ -105,7 +106,8 @@ type_reviews <- shopping_trends_clean %>%
 ```
 
 ```{r}
-#| label: vizualization_for_gender_review
+#| label: vizualize_gender_review
+# Boxplot of review ratings by gender ----
 ggplot(
   data = type_reviews,
   aes(
@@ -118,17 +120,17 @@ ggplot(
 
 ```{r}
 #| label: summary_table
+# Display regression summary for purchase amount by category ----
 shopping_summary <- lm(formula = purchase_amount_usd ~ category, data = shopping_trends_clean)
 shopping_summary_model <- summary(shopping_summary)
 
 shopping_summary_model$coefficients %>%
-  kable() %>%
-  kableExtra::kable_classic()
+  knitr::kable()
 ```
 
 ```{r} 
-#| label: summaraize_data
-
+#| label: summarize_purchase_data
+# Summary statistics for purchase amount by category ----
 shopping_summary <- shopping_trends_clean %>%
   select(category, purchase_amount_usd) %>%
   group_by(category) %>%
@@ -139,20 +141,19 @@ shopping_summary <- shopping_trends_clean %>%
     median = median(purchase_amount_usd), 
     Q1 = quantile(purchase_amount_usd, 0.75), 
     max = max(purchase_amount_usd), 
-    medianAbsoluteDeviation = mad(purchase_amount_usd), 
-    sampleArithmeticMean = mean(purchase_amount_usd), 
-    sampleArithmeticSD = sd(purchase_amount_usd)
+    mad = mad(purchase_amount_usd), 
+    mean = mean(purchase_amount_usd), 
+    sd = sd(purchase_amount_usd)
   )
 
 shopping_summary %>%
-  kable() %>%
-  kableExtra::kable_classic()
+  knitr::kable() 
 ```
 
 
 ```{r}
-#| label: summarize_data
-# Group data by Location, Season, and Item
+#| label: group_by_location_season_item
+# Group data by location, season, and item ----
 item_purchased_data <- shopping_trends_clean %>%
   group_by(
     location, 
@@ -167,6 +168,7 @@ item_purchased_data <- shopping_trends_clean %>%
 
 ```{r}
 #| label: map_state_to_region
+# Map U.S. states to regions ----
 # Group States by Region
 state_to_region <- c(
   "Maine" = "Northeast", 
@@ -223,8 +225,8 @@ state_to_region <- c(
 ```
 
 ```{r}
-#| label: new_region_column
-# New Column Added for Region
+#| label: add_region_column
+# Add region column based on location ----
 item_purchased_data <- item_purchased_data %>%
   mutate(
     region = state_to_region[location]
@@ -233,7 +235,7 @@ item_purchased_data <- item_purchased_data %>%
 
 ```{r}
 #| label: filter_by_season
-# Filter Data by Season
+# Filter data by season ----
 spring_data <- item_purchased_data %>%
   filter(season == "Spring")
 
@@ -250,7 +252,7 @@ winter_data <- item_purchased_data %>%
 
 ```{r}
 #| label: visualize_items_by_region_and_season
-# Visualization of Data by Region Summarized by Season
+# Visualize data by region and season ----
 plot_items_by_season <- function(
     item_purchased_data, 
     season_name
@@ -264,7 +266,7 @@ ggplot(
   )
 ) +
   geom_bar(
-    stat = "Identity", 
+    stat = "identity", 
     position = position_dodge(width = 0.8), 
     width = 0.6
   ) +
@@ -291,7 +293,6 @@ ggplot(
   theme_minimal(base_size = 14) +
   theme(
     panel.grid.major = element_blank(), 
-    panel.grid.minor = element_blank(), 
     axis.text.x = element_text(
       angle = 45, 
       hjust = 1, 
@@ -315,7 +316,7 @@ ggplot(
 
 ```{r}
 #| label: create_each_plot
-
+# Generate and display plots for each season ----
 spring_plot <- plot_items_by_season(spring_data, "Spring")
 summer_plot <- plot_items_by_season(summer_data, "Summer")
 fall_plot <- plot_items_by_season(fall_data, "Fall")
