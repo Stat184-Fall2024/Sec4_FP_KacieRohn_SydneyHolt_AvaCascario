@@ -115,7 +115,15 @@ ggplot(
     y = review_rating
   )
 ) +
-  geom_boxplot()
+  geom_boxplot()+
+  labs(
+    x = "Gender",
+    y = "Review Rating",
+    title = "Men vs Women Reviews"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
 ```
 
 ```{r}
