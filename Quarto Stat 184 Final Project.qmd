@@ -25,11 +25,10 @@ execute:
 ```
 
 ```{r}
-#| label: loadPackages
+#| label: load_packages
 # Load Packages
 library(ggplot2)
 library(dplyr)
-
 ```
 
 # **Research Topic: Field of Study vs Occupation**
@@ -41,21 +40,19 @@ library(dplyr)
 # **FAIR and CARE Principles**
 
 ```{r}
-#| label: loadData
-
-shoppingTrendsRaw <- read.csv(
+#| label: load_data
+# Load Data
+shopping_trends_raw <- read.csv(
   file = "shopping_trends.csv", 
   header = TRUE, 
   sep = ","
 )
-
-View(shoppingTrendsRaw)
 ```
 
 ```{r}
-#| label: summarizeData
-
-itemPurchasedData <- shoppingTrendsRaw %>%
+#| label: summarize_data
+# Summarize Data
+item_purchased_data <- shopping_trends_raw %>%
   group_by(
     Location, 
     Season, 
@@ -68,9 +65,9 @@ itemPurchasedData <- shoppingTrendsRaw %>%
 ```
 
 ```{r}
-#| label: groupStatesByRegion
-
-stateToRegion <- c(
+#| label: group_states_by_region
+# Group States by Region
+state_to_region <- c(
   "Maine" = "Northeast", 
   "New Hampshire" = "Northeast", 
   "Vermont" = "Northeast", 
@@ -122,18 +119,43 @@ stateToRegion <- c(
   "Alaska" = "West",
   "Hawaii" = "West"
 )
+```
 
-itemPurchasedData <- itemPurchasedData %>%
+```{r}
+#| label: new_region_column
+# New Column Added for Region
+item_purchased_data <- item_purchased_data %>%
   mutate(
-    Region = stateToRegion[Location]
+    Region = state_to_region[Location]
   )
 ```
 
 ```{r}
-#| label: visualizeItemsByRegionAndSeason
+#| label: filter_by_season
+# Filter Data by Season
+spring_data <- item_purchased_data %>%
+  filter(Season == "Spring")
 
+summer_data <- item_purchased_data %>%
+  filter(Season == "Summer")
+
+fall_data <- item_purchased_data %>%
+  filter(Season == "Fall")
+
+winter_data <- item_purchased_data %>%
+  filter(Season == "Winter")
+```
+
+
+```{r}
+#| label: visualize_items_by_region_and_season
+# Visualization of Data by Region Summarized by Season
+plot_items_by_season <- function(
+    item_purchased_data, 
+    season_name
+    ) {
 ggplot(
-  itemPurchasedData, 
+  item_purchased_data, 
   aes(
     x = Item.Purchased,
     y = Item.Count, 
@@ -142,16 +164,17 @@ ggplot(
 ) +
   geom_bar(
     stat = "Identity", 
-    position = "dodge"
+    position = position_dodge(width = 0.8), 
+    width = 0.8
   ) +
-  facet_wrap(
-    ~Season, 
-    scales = "free_x", 
-    ncol = 1, 
-    strip.position = "top"
+  scale_x_discrete(
+    expand = expansion(add = c(0.5, 0.5))
   ) +
   labs(
-    title = "Items Bought by Region and Season", 
+    title = paste(
+      "Items Bought by Region", 
+      season_name
+    ),  
     x = "Item", 
     y = "Number of Items Bought", 
     fill = "Region"
@@ -166,22 +189,36 @@ ggplot(
   ) +
   theme_minimal() +
   theme(
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(), 
     axis.text.x = element_text(
       angle = 45, 
-      hjust = 1
+      hjust = 1, 
+      size = 10
     ), 
-    legend.position = "right", 
-    strip.text = element_text(size = 12),
+    legend.position = "top", 
     plot.title = element_text(
       size = 18, 
       hjust = 0.5, 
       face = "bold"
     ), 
-    plot.margin = margin(20, 20, 20, 20), 
-    axis.title.y = element_text(
-      margin = margin(r = 10)
-    )
+    plot.margin = margin(20, 20, 20, 20)
   )
+}
+```
+
+```{r}
+#| label: create_each_plot
+
+spring_plot <- plot_items_by_season(spring_data, "Spring")
+summer_plot <- plot_items_by_season(summer_data, "Summer")
+fall_plot <- plot_items_by_season(fall_data, "Fall")
+winter_plot <- plot_items_by_season(winter_data, "Winter")
+
+print(spring_plot)
+print(summer_plot)
+print(fall_plot)
+print(winter_plot)
 
 ```
 
