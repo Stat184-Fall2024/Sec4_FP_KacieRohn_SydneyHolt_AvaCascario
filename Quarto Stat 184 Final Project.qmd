@@ -21,9 +21,6 @@ execute:
   warning: false
 ---
 
-```{r} codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
-```
-
 ```{r}
 #| label: loadPackages
 # Load Packages
@@ -223,3 +220,5 @@ ggplot(
 
 ```
 
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
