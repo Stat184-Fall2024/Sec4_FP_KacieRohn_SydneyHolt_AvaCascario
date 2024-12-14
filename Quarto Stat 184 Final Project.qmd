@@ -21,25 +21,55 @@ execute:
   warning: false
 ---
 
-```{r} codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
 
 ```{r}
 #| label: load_packages
-# Load Packages
+# Load necessary packages ----
 library(ggplot2)
 library(dplyr)
+library(kableExtra)
+library(knitr)
+library(tinytex)
 ```
 
 
 ```{r}
 #| label: load_data
-# Load Data
+# Load Data ----
 shopping_trends_raw <- read.csv(
   file = "shopping_trends.csv", 
   header = TRUE, 
   sep = ","
 )
+```
+
+```{r}
+#| label: clean_column_names
+shopping_trends_clean <- shopping_trends_raw %>%
+  rename(
+    customer_id = "Customer.ID", 
+    age = "Age", 
+    gender = "Gender", 
+    item_purchased = "Item.Purchased", 
+    category = "Category", 
+    purchase_amount_usd = "Purchase.Amount..USD.", 
+    location = "Location", 
+    size = "Size", 
+    color = "Color", 
+    season = "Season", 
+    review_rating = "Review.Rating", 
+    subscription_status = "Subscription.Status", 
+    payment_method = "Payment.Method", 
+    shipping_type = "Shipping.Type", 
+    discount_applied = "Discount.Applied", 
+    promo_code_used = "Promo.Code.Used", 
+    previous_purchases = "Previous.Purchases", 
+    preferred_payment_method = "Preferred.Payment.Method", 
+    frequency_of_purchases = "Frequency.of.Purchases"
+  )
+
 ```
 
 
@@ -63,14 +93,14 @@ The data we are utilizing meets the FAIR principles. The data is **findable**, a
 
 ```{r}
 #| label: select_data
-type_reviews <- shopping_trends_raw %>%
+type_reviews <- shopping_trends_clean %>%
   select(
-    Gender, 
-    Review.Rating
+    gender, 
+    review_rating
   ) %>%
   group_by(
-    Gender, 
-    Review.Rating
+    gender, 
+    review_rating
   )
 ```
 
@@ -79,37 +109,64 @@ type_reviews <- shopping_trends_raw %>%
 ggplot(
   data = type_reviews,
   aes(
-    x = Gender,
-    y = Review.Rating
+    x = gender,
+    y = review_rating
   )
 ) +
   geom_boxplot()
 ```
 
+```{r}
+#| label: summary_table
+shopping_summary <- lm(formula = purchase_amount_usd ~ category, data = shopping_trends_clean)
+shopping_summary_model <- summary(shopping_summary)
+
+shopping_summary_model$coefficients %>%
+  kable() %>%
+  kableExtra::kable_classic()
+```
+
 ```{r} 
 #| label: summaraize_data
-shopping_summary <- lm(formula = Purchase.Amount..USD. ~ Category, data = shopping_trends_raw)
-summary(shopping_summary)
+
+shopping_summary <- shopping_trends_clean %>%
+  select(category, purchase_amount_usd) %>%
+  group_by(category) %>%
+  summarize(
+    count = n(), 
+    min = min(purchase_amount_usd), 
+    Q1 = quantile(purchase_amount_usd, 0.25), 
+    median = median(purchase_amount_usd), 
+    Q1 = quantile(purchase_amount_usd, 0.75), 
+    max = max(purchase_amount_usd), 
+    medianAbsoluteDeviation = mad(purchase_amount_usd), 
+    sampleArithmeticMean = mean(purchase_amount_usd), 
+    sampleArithmeticSD = sd(purchase_amount_usd)
+  )
+
+shopping_summary %>%
+  kable() %>%
+  kableExtra::kable_classic()
 ```
 
 
 ```{r}
 #| label: summarize_data
-# Summarize Data
-item_purchased_data <- shopping_trends_raw %>%
+# Group data by Location, Season, and Item
+item_purchased_data <- shopping_trends_clean %>%
   group_by(
-    Location, 
-    Season, 
-    Item.Purchased
+    location, 
+    season, 
+    item_purchased
   ) %>%
   summarize(
-    Item.Count = n(), 
+    item_count = n(), 
     .groups = "drop"
   )
 ```
 
 ```{r}
-#| label: group_states_by_region
+#| label: map_state_to_region
 # Group States by Region
 state_to_region <- c(
   "Maine" = "Northeast", 
@@ -170,7 +227,7 @@ state_to_region <- c(
 # New Column Added for Region
 item_purchased_data <- item_purchased_data %>%
   mutate(
-    Region = state_to_region[Location]
+    region = state_to_region[location]
   )
 ```
 
@@ -178,16 +235,16 @@ item_purchased_data <- item_purchased_data %>%
 #| label: filter_by_season
 # Filter Data by Season
 spring_data <- item_purchased_data %>%
-  filter(Season == "Spring")
+  filter(season == "Spring")
 
 summer_data <- item_purchased_data %>%
-  filter(Season == "Summer")
+  filter(season == "Summer")
 
 fall_data <- item_purchased_data %>%
-  filter(Season == "Fall")
+  filter(season == "Fall")
 
 winter_data <- item_purchased_data %>%
-  filter(Season == "Winter")
+  filter(season == "Winter")
 ```
 
 
@@ -201,9 +258,9 @@ plot_items_by_season <- function(
 ggplot(
   item_purchased_data, 
   aes(
-    x = Item.Purchased,
-    y = Item.Count, 
-    fill = Region
+    x = item_purchased,
+    y = item_count, 
+    fill = region
   )
 ) +
   geom_bar(
@@ -240,13 +297,18 @@ ggplot(
       hjust = 1, 
       size = 8
     ), 
-    legend.position = "top", 
+    axis.title.x = element_text(size = 10),
+    axis.title.y = element_text(size = 10),
+    legend.position = "top",
+    legend.text = element_text(size = 6),
+    legend.title = element_text(size = 8), 
+    legend.key.size = unit(0.5, "cm"),
     plot.title = element_text(
       size = 16, 
       hjust = 0.5, 
       face = "bold"
     ), 
-    plot.margin = margin(20, 20, 20, 20)
+    plot.margin = margin(15, 15, 15, 15)
   )
 }
 ```
