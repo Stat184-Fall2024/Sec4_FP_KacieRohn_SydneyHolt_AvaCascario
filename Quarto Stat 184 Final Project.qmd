@@ -336,4 +336,105 @@ print(fall_plot)
 print(winter_plot)
 
 ```
+```{r}
+#| label: calculate_price_by_promo_code
+# Visualize purchase amount with and without discount codes ----
+ggplot(
+  shopping_trends_clean, 
+  aes(
+    x = promo_code_used,
+    y = purchase_amount_usd, 
+    fill = promo_code_used
+  )
+) +
+  geom_boxplot(
+   outlier.color = "black", 
+   outlier.size = 2
+  ) +
+  labs(
+    title = "Distribution of Spending With and Without a Promo Code", 
+    x = "Promo Code Used", 
+    y = "Purchase Amount ($)"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Yes" = "#5fa052", 
+      "No" = "#963939"
+    )
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none", 
+    plot.title = element_text(
+      hjust = 0.5, 
+      face = "bold", 
+      size = 12
+    ), 
+    axis.title = element_text(size = 10)
+  )
+```
 
+While we assumed there would be a greater difference between amount spent by customers when they use a promo code, this plot shows that people without a promo code only spend slightly more. This can possibly be due to confounding variables like the item purchased, where the item was purchased, and how high end the product was. Despite all of those, we found a vary little correlation between purchase amount and whether or not customers used a promo code.  
+
+```{r}
+#| label: summarize_by_gender_and_frequency
+# Summarize data by gender and frequency of purchases ----
+summary_by_gender_freq <- shopping_trends_clean %>%
+  group_by(
+    gender, 
+    frequency_of_purchases
+  ) %>%
+  summarize(
+    average_previous_purchases = mean(previous_purchases),
+    .groups = "drop"
+  )
+```
+
+```{r}
+#| label: plot_data
+# Filter out N/A frequency of purchases values ----
+summary_by_gender_freq_filtered <- summary_by_gender_freq %>%
+  filter(frequency_of_purchases != "n/a")
+# Visualize average previous purchases by gender and frequency of purchases ----
+ggplot(
+  summary_by_gender_freq_filtered, 
+  aes(
+    x = frequency_of_purchases,
+    y = average_previous_purchases,
+    fill = gender
+  )
+) + 
+  geom_bar(
+    stat = "identity", 
+    position = position_dodge()
+  ) +
+  labs(
+    title = "Average Previous Purchases by Gender and Frequency of Purchases",
+    x = "Frequency of Purchases", 
+    y = "Average Previous Purchases"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Female" = "#FFB6C1",
+      "Male" = "#ADD8E6"
+    )
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, 
+      hjust = 1, 
+      size = 6
+    ), 
+    axis.text.y = element_text(size = 6), 
+    legend.title = element_blank(),
+    legend.text = element_text(size = 8),
+    plot.title = element_text(
+      size = 10, 
+      hjust = 0.5, 
+      face = "bold"
+    ), 
+    axis.title.x = element_text(size = 8),
+    axis.title.y = element_text(size = 8)
+  )
+```
