@@ -123,6 +123,8 @@ ggplot(
     plot.title = element_text(hjust = 0.5)
   )
 ```
+We wanted to research the difference of what review ratings men and women give after purchasing an item. We believed that women would be more opinionated with their reviews, leaving both higher and lower ratings. However after looking at this graph we were able to find that men tend to leave higher review ratings then women. The data that we did use has a larger sample of men compared to women which could lead to skewed data. However, with the data we have both men and women have similar ratings with men having a slightly higher percent of good ratings. 
+
 
 ```{r}
 #| label: summary_table
@@ -133,6 +135,8 @@ shopping_summary_model <- summary(shopping_summary)
 shopping_summary_model$coefficients %>%
   knitr::kable()
 ```
+
+Another data point we wanted to research was the relationship between amount spent and what type of category of item it was. When looking at the regression summary we can see that Outerwear has the most affect on the regression line. This makes sense due to the fact that Outerwear tend to be more expensive items such as jackets and coats. Then Footwear which also tends to be expensive items. Finally Clothing affects the regression line least due to the fact that these items tend to be the least expensive.
 
 ```{r} 
 #| label: summarize_purchase_data
