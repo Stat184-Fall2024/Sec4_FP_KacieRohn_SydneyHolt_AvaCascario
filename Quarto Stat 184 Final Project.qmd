@@ -1,7 +1,7 @@
 ---
 title: "Recent Customer Shopping Trends"
 author: "Ava Cascario, Sydney Holt, and Kacie Rohn"
-date: "Dec. 3, 2024"
+date: "Dec. 18, 2024"
 date-modified: now
 format: 
   pdf: 
@@ -10,6 +10,7 @@ format:
     number-depth: 5
     fig-align: center
     cap-location: top
+    csl: MLA9.csl
     geometry: 
       - top=1in
       - left=1in
@@ -26,6 +27,7 @@ execute:
 
 ```{r}
 #| label: load_packages
+
 # Load necessary packages ----
 library(ggplot2)
 library(dplyr)
@@ -90,59 +92,14 @@ We are utilizing a data set that we found on Kaggle. Kaggle is a website focused
 The data we are utilizing meets the FAIR principles. The data is **findable**, and includes unique identifiers as well rich and substantial metadata. Each case is given an ID number, and there are numerous attributes that they are defined by. The data is **accessible** and can be found in our public repository. We also downloaded the data from Kaggle, which is public and we were able to easily locate it and access it. The data is **interoperable** and uses the R language which is widely known and accepted. This way our data can be exchanged between collaborators and allows for open communication. By citing our sources and explaining the provenance of our data, this ensure our data is also **reusable**. By meeting the FAIR principles we are ensuring that our data is universal, and can be easily understood. 
 
 
-
-```{r}
-#| label: select_data
-# Group data by gender and review rating ----
-type_reviews <- shopping_trends_clean %>%
-  select(
-    gender, 
-    review_rating
-  ) %>%
-  group_by(
-    gender, 
-    review_rating
-  )
-```
-
-```{r}
-#| label: vizualize_gender_review
-# Boxplot of review ratings by gender ----
-ggplot(
-  data = type_reviews,
-  aes(
-    x = gender,
-    y = review_rating
-  )
-) +
-  geom_boxplot()+
-  labs(
-    x = "Gender",
-    y = "Review Rating",
-    title = "Men vs Women Reviews"
-  ) +
-  theme(
-    plot.title = element_text(hjust = 0.5)
-  )
-```
-We wanted to research the difference of what review ratings men and women give after purchasing an item. We believed that women would be more opinionated with their reviews, leaving both higher and lower ratings. However after looking at this graph we were able to find that men tend to leave higher review ratings then women. The data that we did use has a larger sample of men compared to women which could lead to skewed data. However, with the data we have both men and women have similar ratings with men having a slightly higher percent of good ratings. 
-
-
-```{r}
-#| label: summary_table
-# Display regression summary for purchase amount by category ----
-shopping_summary <- lm(formula = purchase_amount_usd ~ category, data = shopping_trends_clean)
-shopping_summary_model <- summary(shopping_summary)
-
-shopping_summary_model$coefficients %>%
-  knitr::kable()
-```
-
-Another data point we wanted to research was the relationship between amount spent and what type of category of item it was. When looking at the regression summary we can see that Outerwear has the most affect on the regression line. This makes sense due to the fact that Outerwear tend to be more expensive items such as jackets and coats. Then Footwear which also tends to be expensive items. Finally Clothing affects the regression line least due to the fact that these items tend to be the least expensive.
-
 ```{r} 
-#| label: summarize_purchase_data
-# Summary statistics for purchase amount by category ----
+#| label: tbl-purchase_summary
+#| tbl-cap: "Summary Statistics on Purchase Amount by Category"
+#| tbl-pos: H
+#| html-table-processing: none
+#| lst-label: lst-table1
+#| lst-cap: "Code Chunk for Making Table"
+# Make summary table for purchase amount by category ----
 shopping_summary <- shopping_trends_clean %>%
   select(category, purchase_amount_usd) %>%
   group_by(category) %>%
@@ -181,7 +138,6 @@ item_purchased_data <- shopping_trends_clean %>%
 ```{r}
 #| label: map_state_to_region
 # Map U.S. states to regions ----
-# Group States by Region
 state_to_region <- c(
   "Maine" = "Northeast", 
   "New Hampshire" = "Northeast", 
@@ -263,7 +219,7 @@ winter_data <- item_purchased_data %>%
 
 
 ```{r}
-#| label: visualize_items_by_region_and_season
+#| label: fig-seasons_plot
 # Visualize data by region and season ----
 plot_items_by_season <- function(
     item_purchased_data, 
@@ -286,8 +242,7 @@ ggplot(
     expand = expansion(add = c(0.5, 0.5))
   ) +
   labs(
-    title = paste(
-      "Items Bought by Region", 
+    title = paste( 
       season_name
     ),  
     x = "Item", 
@@ -327,7 +282,13 @@ ggplot(
 ```
 
 ```{r}
-#| label: create_each_plot
+#| label: fig-plot_seasons
+#| fig-cap: "Popularity of Items by Region and Season"
+#| fig-pos: H
+#| fig-height: 5
+#| fig-alt: "Bar charts showing popularity of items purchased by customers of different demographics"
+#| lst-label: lst-figure1
+#| lst-cap: "Code Chunk for Making Figures"
 # Generate and display plots for each season ----
 spring_plot <- plot_items_by_season(spring_data, "Spring")
 summer_plot <- plot_items_by_season(summer_data, "Summer")
@@ -341,7 +302,13 @@ print(winter_plot)
 
 ```
 ```{r}
-#| label: calculate_price_by_promo_code
+#| label: fig-price_by_promo_code
+#| fig-cap: "Distribution of Spending With and Without a Promo Code"
+#| fig-pos: H
+#| fig-height: 5
+#| fig-alt: "Box plot showing customer spending based on promo codes"
+#| lst-label: lst-figure2
+#| lst-cap: "Code Chunk for Making Figures"
 # Visualize purchase amount with and without discount codes ----
 ggplot(
   shopping_trends_clean, 
@@ -356,7 +323,6 @@ ggplot(
    outlier.size = 2
   ) +
   labs(
-    title = "Distribution of Spending With and Without a Promo Code", 
     x = "Promo Code Used", 
     y = "Purchase Amount ($)"
   ) +
@@ -395,10 +361,20 @@ summary_by_gender_freq <- shopping_trends_clean %>%
 ```
 
 ```{r}
-#| label: plot_data
+#| label: filter_NA
 # Filter out N/A frequency of purchases values ----
 summary_by_gender_freq_filtered <- summary_by_gender_freq %>%
   filter(frequency_of_purchases != "n/a")
+```
+
+```{r}
+#| label: fig-purchase_frequency
+#| fig-cap: "Distribution of Purchase Frequency by Gender"
+#| fig-pos: H
+#| fig-height: 5
+#| fig-alt: "Bar chart showing customer shopping frequency based on gender and how often they shop"
+#| lst-label: lst-figure3
+#| lst-cap: "Code Chunk for Making Figures"
 # Visualize average previous purchases by gender and frequency of purchases ----
 ggplot(
   summary_by_gender_freq_filtered, 
@@ -413,7 +389,6 @@ ggplot(
     position = position_dodge()
   ) +
   labs(
-    title = "Average Previous Purchases by Gender and Frequency of Purchases",
     x = "Frequency of Purchases", 
     y = "Average Previous Purchases"
   ) +
@@ -442,3 +417,51 @@ ggplot(
     axis.title.y = element_text(size = 8)
   )
 ```
+
+```{r}
+```{r}
+#| label: select_data
+# Group data by gender and review rating ----
+type_reviews <- shopping_trends_clean %>%
+  select(
+    gender, 
+    review_rating
+  ) %>%
+  group_by(
+    gender, 
+    review_rating
+  )
+```
+
+```{r}
+#| label: fig-gender_review
+#| fig-cap: "Distribution of Review Ratings by Gender"
+#| fig-pos: H
+#| fig-height: 5
+#| fig-alt: "Box plot showing customer review ratings based on their gender"
+#| lst-label: lst-figure4
+#| lst-cap: "Code Chunk for Making Figures"
+# Make boxplot of review ratings by gender ----
+ggplot(
+  data = type_reviews,
+  aes(
+    x = gender,
+    y = review_rating
+  )
+) +
+  geom_boxplot()+
+  labs(
+    x = "Gender",
+    y = "Review Rating"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+We wanted to research the difference of what review ratings men and women give after purchasing an item. We believed that women would be more opinionated with their reviews, leaving both higher and lower ratings. However after looking at this graph we were able to find that men tend to leave higher review ratings then women. The data that we did use has a larger sample of men compared to women which could lead to skewed data. However, with the data we have both men and women have similar ratings with men having a slightly higher percent of good ratings. 
+
+{{< pagebreak >}}
+# Works Cited
+
+::: {#refs}
+::: 
