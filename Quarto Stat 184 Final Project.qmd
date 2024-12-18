@@ -1,26 +1,29 @@
 ---
 title: "Recent Customer Shopping Trends"
 author: "Ava Cascario, Sydney Holt, and Kacie Rohn"
-date: "Dec. 3, 2024"
+date: "Dec. 18, 2024"
 date-modified: now
-format: 
-  pdf: 
+format:
+  pdf:
     toc: false
     number-sections: false
     number-depth: 5
     fig-align: center
     cap-location: top
-    geometry: 
+    geometry:
       - top=1in
       - left=1in
       - right=1in
       - bottom=1in
     colorlinks: true
-execute: 
+bibliography: references.bib
+nocite: |
+  @*
+csl: MLA9.csl
+execute:
   echo: false
   warning: false
 ---
-
 
 ```{r}
 #| label: load_packages
@@ -31,13 +34,12 @@ library(knitr)
 library(tinytex)
 ```
 
-
 ```{r}
 #| label: load_data
 # Load shopping trends dataset ----
 shopping_trends_raw <- read.csv(
-  file = "shopping_trends.csv", 
-  header = TRUE, 
+  file = "shopping_trends.csv",
+  header = TRUE,
   sep = ","
 )
 ```
@@ -47,29 +49,28 @@ shopping_trends_raw <- read.csv(
 # Clean column names for consistency ----
 shopping_trends_clean <- shopping_trends_raw %>%
   rename(
-    customer_id = "Customer.ID", 
-    age = "Age", 
-    gender = "Gender", 
-    item_purchased = "Item.Purchased", 
-    category = "Category", 
-    purchase_amount_usd = "Purchase.Amount..USD.", 
-    location = "Location", 
-    size = "Size", 
-    color = "Color", 
-    season = "Season", 
-    review_rating = "Review.Rating", 
-    subscription_status = "Subscription.Status", 
-    payment_method = "Payment.Method", 
-    shipping_type = "Shipping.Type", 
-    discount_applied = "Discount.Applied", 
-    promo_code_used = "Promo.Code.Used", 
-    previous_purchases = "Previous.Purchases", 
-    preferred_payment_method = "Preferred.Payment.Method", 
+    customer_id = "Customer.ID",
+    age = "Age",
+    gender = "Gender",
+    item_purchased = "Item.Purchased",
+    category = "Category",
+    purchase_amount_usd = "Purchase.Amount..USD.",
+    location = "Location",
+    size = "Size",
+    color = "Color",
+    season = "Season",
+    review_rating = "Review.Rating",
+    subscription_status = "Subscription.Status",
+    payment_method = "Payment.Method",
+    shipping_type = "Shipping.Type",
+    discount_applied = "Discount.Applied",
+    promo_code_used = "Promo.Code.Used",
+    previous_purchases = "Previous.Purchases",
+    preferred_payment_method = "Preferred.Payment.Method",
     frequency_of_purchases = "Frequency.of.Purchases"
   )
 
 ```
-
 
 # **Research Topic: Latest Customer Shopping Trends**
 
@@ -77,64 +78,38 @@ This research focuses on recent customer shopping trends, a topic that is both f
 
 # **Research Questions**
 
-The first research question we will explore is, how do different demographics such as age, gender, location, and price affect the shopping trends of customers. We will create different visuals to present our findings and explain the correlation between each one of these features and customer shopping behavior. We are also curious to know, does gender have an affect on how much the customer spends, what item(s) they buy, and what reviews they left on the product. We predict that there will be large differences between the shopping trends of males versus the shopping trends of females, and intend to explore this further using multiple types of visualizations and tables. We must be aware of bias, as we are all females who experience the female shopping trends ourselves, and we cannot allow this to alter the conclusions we make. We are also curious on if the time of year (season) and geographical location of a customer changes what specific item they purchase. For example, does someone who is experiencing summer in Florida tend to buy something different from a customer experiencing winter in Maine? Overall, this is not an exhaustive list on what we intend to explore, as there are many different combinations of features that allow for different discoveries. 
+The first research question we will explore is, how do different demographics such as age, gender, location, and price affect the shopping trends of customers. We will create different visuals to present our findings and explain the correlation between each one of these features and customer shopping behavior. We are also curious to know, does gender have an affect on how much the customer spends, what item(s) they buy, and what reviews they left on the product. We predict that there will be large differences between the shopping trends of males versus the shopping trends of females, and intend to explore this further using multiple types of visualizations and tables. We must be aware of bias, as we are all females who experience the female shopping trends ourselves, and we cannot allow this to alter the conclusions we make. We are also curious on if the time of year (season) and geographical location of a customer changes what specific item they purchase. For example, does someone who is experiencing summer in Florida tend to buy something different from a customer experiencing winter in Maine? Overall, this is not an exhaustive list on what we intend to explore, as there are many different combinations of features that allow for different discoveries.
 
 # **Provenance Of Our Data**
 
-We are utilizing a data set that we found on Kaggle. Kaggle is a website focused towards data scientists with a goal in helping others learn about data. The author of the data is Bhadra Mohit, and they describe it as offering a comprehensive view of consumer shopping trends, aiming to uncover patterns and behaviors in retail purchasing. It contains detailed transactional data across various product categories, customer demographics, and purchase channels. This data set was last updated 20 days ago, and is expected to be updated 4 times a year. This ensures that the data remains relevant and is as accurate as possible. In this data set, case is an individual transaction. This includes the attributes, customer ID, age, gender, item purchased, category, purchase amount USD, location, size, color, season, review rating, subscription status, payment method, shipping type, discount applies, promo code used, previous purchases, preferred payment method, and frequency of purchases. We intend to focus on age, gender, item purchased, location, season, review rating, and previous purchases. All of the attributes come from the data set, but we also created the attribute of region, which groups all fifty states into four regions: Northeast, South, Midwest, and West. This is based upon the national recognized regions in the United States.   
+We are utilizing a data set that we found on Kaggle. Kaggle is a website focused towards data scientists with a goal in helping others learn about data. The author of the data is Bhadra Mohit, and they describe it as offering a comprehensive view of consumer shopping trends, aiming to uncover patterns and behaviors in retail purchasing. It contains detailed transactional data across various product categories, customer demographics, and purchase channels. This data set was last updated 20 days ago, and is expected to be updated 4 times a year. This ensures that the data remains relevant and is as accurate as possible. In this data set, case is an individual transaction. This includes the attributes, customer ID, age, gender, item purchased, category, purchase amount USD, location, size, color, season, review rating, subscription status, payment method, shipping type, discount applies, promo code used, previous purchases, preferred payment method, and frequency of purchases. We intend to focus on age, gender, item purchased, location, season, review rating, and previous purchases. All of the attributes come from the data set, but we also created the attribute of region, which groups all fifty states into four regions: Northeast, South, Midwest, and West. This is based upon the national recognized regions in the United States.  
 
 # **FAIR Principles**
 
-The data we are utilizing meets the FAIR principles. The data is **findable**, and includes unique identifiers as well rich and substantial metadata. Each case is given an ID number, and there are numerous attributes that they are defined by. The data is **accessible** and can be found in our public repository. We also downloaded the data from Kaggle, which is public and we were able to easily locate it and access it. The data is **interoperable** and uses the R language which is widely known and accepted. This way our data can be exchanged between collaborators and allows for open communication. By citing our sources and explaining the provenance of our data, this ensure our data is also **reusable**. By meeting the FAIR principles we are ensuring that our data is universal, and can be easily understood. 
+The data we are utilizing meets the FAIR principles. The data is **findable**, and includes unique identifiers as well rich and substantial metadata. Each case is given an ID number, and there are numerous attributes that they are defined by. The data is **accessible** and can be found in our public repository. We also downloaded the data from Kaggle, which is public and we were able to easily locate it and access it. The data is **interoperable** and uses the R language which is widely known and accepted. This way our data can be exchanged between collaborators and allows for open communication. By citing our sources and explaining the provenance of our data, this ensure our data is also **reusable**. By meeting the FAIR principles we are ensuring that our data is universal, and can be easily understood.
 
-# **Data Visualizations**
-
-
-```{r}
-#| label: select_data
-# Group data by gender and review rating ----
-type_reviews <- shopping_trends_clean %>%
-  select(
-    gender, 
-    review_rating
-  ) %>%
-  group_by(
-    gender, 
-    review_rating
-  )
-```
-
-```{r}
-#| label: vizualize_gender_review
-# Boxplot of review ratings by gender ----
-ggplot(
-  data = type_reviews,
-  aes(
-    x = gender,
-    y = review_rating
-  )
-) +
-  geom_boxplot()+
-  labs(
-    x = "Gender",
-    y = "Review Rating",
-    title = "Male vs Female Reviews"
-  ) +
-  theme(
-    plot.title = element_text(hjust = 0.5)
-  )
-```
-
-
-Figure One shows the average review ratings a customer leaves after making a purchase, by Gender. Each customer was able to leave a review rating between 0-5, and we took the average of both the female reviews, and the male reviews to graph. The results we found were different than our initial expectations. We can conclude from Figure One that males tend to leave slighter high reviews than women do. While we thought this to be true before graphing the data, we expected the results to be much more drastic. Females tend to leave, on average, a rating of approximately 3.7, while males leave approximately a 3.8. This is based on the grid lines and Y-axis scale. However, we found that there are also more men in our original data set which can lead to skewed and biased results. The unbalanced number of each gender could be what is making the males average appear higher than the females. Overall, figure one gives us an insight into the reviews typically left by each gender, and whether female or males tend to be "harsher" when reviewing a product. The use of a box plot appropriately displays the data and therefore the difference in average review ratings by gender can be easily compared.
+# **Data Exploration**
 
 ```{r} 
-#| label: summarize_purchase_data
-# Summary statistics for purchase amount by category ----
+#| label: tbl-purchase_summary
+#| tbl-cap: "Summary Statistics on Purchase Amount by Category"
+#| tbl-pos: H
+#| html-table-processing: none
+#| lst-label: lst-table1
+#| lst-cap: "Code Chunk for Making Table"
+# Make summary table for purchase amount by category ----
 shopping_summary <- shopping_trends_clean %>%
   select(category, purchase_amount_usd) %>%
   group_by(category) %>%
   summarize(
+    count = n(),
+    min = min(purchase_amount_usd),
+    Q1 = quantile(purchase_amount_usd, 0.25),
+    median = median(purchase_amount_usd),
+    Q1 = quantile(purchase_amount_usd, 0.75),
+    max = max(purchase_amount_usd),
+    mad = mad(purchase_amount_usd),
+    mean = mean(purchase_amount_usd),
     count = n(), 
     min = min(purchase_amount_usd), 
     Q1 = quantile(purchase_amount_usd, 0.25), 
@@ -147,23 +122,22 @@ shopping_summary <- shopping_trends_clean %>%
   )
 
 shopping_summary %>%
-  knitr::kable() 
+  knitr::kable()
 ```
 
-
-Figure Two shows a summary table including count, minimum, Q1, median, Q3, maximum, median absolute deviation, mean, and standard deviation of clothing category and purchase amount. Each item in the original data set was categorizes into one of the four categories. We can utilize this table to not only see simple statistics, but also the spread and deviations of the data. We were interested in gaining a better understanding of customer spending trends, and therefore we chose this summary table. From the table we can make numerous conclusion. Looking at the count column, we can see that the Clothing category has the highest count, followed by Accessories, Footwear, and Outerwear respectively. This means that out of the entire data set, items that fall under the clothing category are the most popular and most frequently bought. The minimum and maximum price for each item are the same, 20 and 100 respectively. This could mean that the original data set only chose to collect information on items within that price range. We found it interesting that while accessories, clothing, and footwear all have the same median of 60, outerwear has a lower median of just 54.5. This could mean that 
+Before creating any visualizations, we created a table of several descriptive statistics of customers' purchase amounts by the category of the item they purchased. @tbl-purchase_summary shows a summary table including *count*, *minimum*, *Q1*, *median*, *Q3*, *maximum*, *median absolute deviation*, *mean*, and *standard deviation* of item category and purchase amount. Each item in the original data set was categorizes into one of the four categories. We can utilize this table to not only see simple statistics, but also the spread and deviations of the data. We were interested in gaining a better understanding of customer spending trends, and therefore we chose this summary table. From the table we can make numerous conclusions. Looking at the count column, we can see that the Clothing category has the highest count, followed by Accessories, Footwear, and Outerwear respectively. This means that out of the entire data set, items that fall under the clothing category are the most popular and most frequently bought. The minimum and maximum price for each item are the same, 20 and 100 respectively. This could mean that the original data set only chose to collect information on items within that price range. We found it interesting that while accessories, clothing, and footwear all have the same median of 60, outerwear has a lower median of just 54.5. This could mean that 
 
 ```{r}
 #| label: group_by_location_season_item
 # Group data by location, season, and item ----
 item_purchased_data <- shopping_trends_clean %>%
   group_by(
-    location, 
-    season, 
+    location,
+    season,
     item_purchased
   ) %>%
   summarize(
-    item_count = n(), 
+    item_count = n(),
     .groups = "drop"
   )
 ```
@@ -171,11 +145,10 @@ item_purchased_data <- shopping_trends_clean %>%
 ```{r}
 #| label: map_state_to_region
 # Map U.S. states to regions ----
-# Group States by Region
 state_to_region <- c(
-  "Maine" = "Northeast", 
-  "New Hampshire" = "Northeast", 
-  "Vermont" = "Northeast", 
+  "Maine" = "Northeast",
+  "New Hampshire" = "Northeast",
+  "Vermont" = "Northeast",
   "Massachusetts" = "Northeast",
   "Rhode Island" = "Northeast",
   "Connecticut" = "Northeast",
@@ -198,7 +171,7 @@ state_to_region <- c(
   "Louisiana" = "South",
   "Oklahoma" = "South",
   "Texas" = "South",
-  "Indiana" = "Midwest", 
+  "Indiana" = "Midwest",
   "Illinois" = "Midwest",
   "Michigan" = "Midwest",
   "Ohio" = "Midwest",
@@ -251,25 +224,24 @@ winter_data <- item_purchased_data %>%
   filter(season == "Winter")
 ```
 
-
 ```{r}
-#| label: visualize_items_by_region_and_season
+#| label: fig-seasons_plot
 # Visualize data by region and season ----
 plot_items_by_season <- function(
-    item_purchased_data, 
+    item_purchased_data,
     season_name
     ) {
 ggplot(
-  item_purchased_data, 
+  item_purchased_data,
   aes(
     x = item_purchased,
-    y = item_count, 
+    y = item_count,
     fill = region
   )
 ) +
   geom_bar(
-    stat = "identity", 
-    position = position_dodge(width = 0.8), 
+    stat = "identity",
+    position = position_dodge(width = 0.8),
     width = 0.6
   ) +
   scale_x_discrete(
@@ -277,47 +249,52 @@ ggplot(
   ) +
   labs(
     title = paste(
-      "Items Bought by Region", 
       season_name
     ),  
-    x = "Item", 
-    y = "Number of Items Bought", 
+    x = "Item",
+    y = "Number of Items Bought",
     fill = "Region"
   ) +
   scale_fill_manual(
     values = c(
-      "Northeast" = "#8DA0CB", 
-      "South" = "#FC8D62", 
-      "Midwest" = "#66C2A5", 
+      "Northeast" = "#8DA0CB",
+      "South" = "#FC8D62",
+      "Midwest" = "#66C2A5",
       "West" = "#E78AC3"
     )
   ) +
   theme_minimal(base_size = 14) +
   theme(
-    panel.grid.major = element_blank(), 
+    panel.grid.major = element_blank(),
     axis.text.x = element_text(
-      angle = 45, 
-      hjust = 1, 
+      angle = 45,
+      hjust = 1,
       size = 8
-    ), 
+    ),
     axis.title.x = element_text(size = 10),
     axis.title.y = element_text(size = 10),
     legend.position = "top",
     legend.text = element_text(size = 6),
-    legend.title = element_text(size = 8), 
+    legend.title = element_text(size = 8),
     legend.key.size = unit(0.5, "cm"),
     plot.title = element_text(
-      size = 16, 
-      hjust = 0.5, 
+      size = 16,
+      hjust = 0.5,
       face = "bold"
-    ), 
+    ),
     plot.margin = margin(15, 15, 15, 15)
   )
 }
 ```
 
 ```{r}
-#| label: create_each_plot
+#| label: fig-plot_seasons
+#| fig-cap: "Popularity of Items by Region and Season"
+#| fig-pos: H
+#| fig-height: 5
+#| fig-alt: "Bar charts showing popularity of items purchased by customers of different demographics"
+#| lst-label: lst-figure1
+#| lst-cap: "Code Chunk for Making Figures"
 # Generate and display plots for each season ----
 spring_plot <- plot_items_by_season(spring_data, "Spring")
 summer_plot <- plot_items_by_season(summer_data, "Summer")
@@ -330,45 +307,51 @@ print(fall_plot)
 print(winter_plot)
 
 ```
+
 ```{r}
-#| label: calculate_price_by_promo_code
+#| label: fig-price_by_promo_code
+#| fig-cap: "Distribution of Spending With and Without a Promo Code"
+#| fig-pos: H
+#| fig-height: 5
+#| fig-alt: "Box plot showing customer spending based on promo codes"
+#| lst-label: lst-figure2
+#| lst-cap: "Code Chunk for Making Figures"
 # Visualize purchase amount with and without discount codes ----
 ggplot(
-  shopping_trends_clean, 
+  shopping_trends_clean,
   aes(
     x = promo_code_used,
-    y = purchase_amount_usd, 
-    fill = promo_code_used
+    y = purchase_amount_usd,
+    fill = promo_code_used,
+    table =
   )
 ) +
   geom_boxplot(
-   outlier.color = "black", 
+   outlier.color = "black",
    outlier.size = 2
   ) +
   labs(
-    title = "Distribution of Spending With and Without a Promo Code", 
-    x = "Promo Code Used", 
-    y = "Purchase Amount ($)"
+    x = "Promo Code Used",
+    y = "Purchase Amount ($)",
+    title = "Customer Spending With and Without a Promo Code"
   ) +
   scale_fill_manual(
     values = c(
-      "Yes" = "#5fa052", 
+      "Yes" = "#5fa052",
       "No" = "#963939"
     )
   ) +
   theme_minimal() +
   theme(
-    legend.position = "none", 
+    legend.position = "none",
     plot.title = element_text(
-      hjust = 0.5, 
-      face = "bold", 
+      hjust = 0.5,
+      face = "bold",
       size = 12
-    ), 
+    ),
     axis.title = element_text(size = 10)
   )
 ```
-
-```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 
 While we assumed there would be a greater difference between amount spent by customers when they use a promo code, this plot shows that people without a promo code only spend slightly more. This can possibly be due to confounding variables like the item purchased, where the item was purchased, and how high end the product was. Despite all of those, we found a vary little correlation between purchase amount and whether or not customers used a promo code.  
 
@@ -377,7 +360,7 @@ While we assumed there would be a greater difference between amount spent by cus
 # Summarize data by gender and frequency of purchases ----
 summary_by_gender_freq <- shopping_trends_clean %>%
   group_by(
-    gender, 
+    gender,
     frequency_of_purchases
   ) %>%
   summarize(
@@ -387,27 +370,37 @@ summary_by_gender_freq <- shopping_trends_clean %>%
 ```
 
 ```{r}
-#| label: plot_data
+#| label: filter_NA
 # Filter out N/A frequency of purchases values ----
 summary_by_gender_freq_filtered <- summary_by_gender_freq %>%
   filter(frequency_of_purchases != "n/a")
+```
+
+```{r}
+#| label: fig-purchase_frequency
+#| fig-cap: "Distribution of Purchase Frequency by Gender"
+#| fig-pos: H
+#| fig-height: 5
+#| fig-alt: "Bar chart showing customer shopping frequency based on gender and how often they shop"
+#| lst-label: lst-figure3
+#| lst-cap: "Code Chunk for Making Figures"
 # Visualize average previous purchases by gender and frequency of purchases ----
 ggplot(
-  summary_by_gender_freq_filtered, 
+  summary_by_gender_freq_filtered,
   aes(
     x = frequency_of_purchases,
     y = average_previous_purchases,
     fill = gender
   )
-) + 
+) +
   geom_bar(
-    stat = "identity", 
+    stat = "identity",
     position = position_dodge()
   ) +
   labs(
-    title = "Average Previous Purchases by Gender and Frequency of Purchases",
-    x = "Frequency of Purchases", 
-    y = "Average Previous Purchases"
+    x = "Frequency of Purchases",
+    y = "Average Previous Purchases",
+    title = "Purchase Frequency by Gender"
   ) +
   scale_fill_manual(
     values = c(
@@ -418,26 +411,79 @@ ggplot(
   theme_minimal(base_size = 14) +
   theme(
     axis.text.x = element_text(
-      angle = 45, 
-      hjust = 1, 
+      angle = 45,
+      hjust = 1,
       size = 6
-    ), 
-    axis.text.y = element_text(size = 6), 
+    ),
+    axis.text.y = element_text(size = 6),
     legend.title = element_blank(),
     legend.text = element_text(size = 8),
     plot.title = element_text(
-      size = 10, 
-      hjust = 0.5, 
+      size = 10,
+      hjust = 0.5,
       face = "bold"
-    ), 
+    ),
     axis.title.x = element_text(size = 8),
     axis.title.y = element_text(size = 8)
   )
 
 ```
 
-## **References**
-Mohit, Bhadra.(2024) *Costumer Shopping(Latest Trends)Dataset*. Kaggle. <https://www.kaggle.com/datasets/bhadramohit/customer-shopping-latest-trends-dataset>.
+```{r}
+#| label: select_data
+# Group data by gender and review rating ----
+type_reviews <- shopping_trends_clean %>%
+  select(
+    gender,
+    review_rating
+  ) %>%
+  group_by(
+    gender,
+    review_rating
+  )
+```
+
+```{r}
+#| label: fig-gender_review
+#| fig-cap: "Distribution of Review Ratings by Gender"
+#| fig-pos: H
+#| fig-height: 5
+#| fig-alt: "Box plot showing customer review ratings based on their gender"
+#| lst-label: lst-figure4
+#| lst-cap: "Code Chunk for Making Figures"
+# Make boxplot of review ratings by gender ----
+ggplot(
+  data = type_reviews,
+  aes(
+    x = gender,
+    y = review_rating,
+  )
+) +
+  geom_boxplot() +
+  labs(
+    x = "Gender",
+    y = "Review Rating",
+    title = "Review Ratings by Gender"
+  ) +
+  theme(
+    plot.title = element_text(
+      hjust = 0.5,
+      face = "bold"
+    )
+  )
+```
+@fig-gender_review shows the average review ratings a customer leaves after making a purchase, by Gender. Each customer was able to leave a review rating between 0-5, and we took the average of both the female reviews, and the male reviews to graph. The results we found were different than our initial expectations. We can conclude from @fig-gender_review that males tend to leave slighter high reviews than women do. While we thought this to be true before graphing the data, we expected the results to be much more drastic. Females tend to leave, on average, a rating of approximately 3.7, while males leave approximately a 3.8. This is based on the grid lines and Y-axis scale. However, we found that there are also more men in our original data set which can lead to skewed and biased results. The unbalanced number of each gender could be what is making the males average appear higher than the females. Overall, @fig-gender_review gives us an insight into the reviews typically left by each gender, and whether female or males tend to be "harsher" when reviewing a product. The use of a box plot appropriately displays the data and therefore the difference in average review ratings by gender can be easily compared.
+
+{{< pagebreak >}}
+# Works Cited
+
+::: {#refs}
+:::
+
+{{< pagebreak >}}
+# Code Appendix
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
 
 Centers for Disease Control and Prevention.(2024) *Geographic Region* National Center for Health Statistics. <https://www.cdc.gov/nchs/hus/sources-definitions/geographic-region.htm#:~:text=Geographic%20region,Ohio%2C%20South%20Dakota%2C%20and%20Wisconsin>
 
