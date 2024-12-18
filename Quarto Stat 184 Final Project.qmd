@@ -3,6 +3,7 @@ title: "Recent Customer Shopping Trends"
 author: "Ava Cascario, Sydney Holt, and Kacie Rohn"
 date: "Dec. 18, 2024"
 date-modified: now
+
 format: 
   pdf: 
     toc: false
@@ -10,20 +11,21 @@ format:
     number-depth: 5
     fig-align: center
     cap-location: top
-    csl: MLA9.csl
     geometry: 
       - top=1in
       - left=1in
       - right=1in
       - bottom=1in
     colorlinks: true
+bibliography: references.bib
+nocite: |
+  @*
+csl: MLA9.csl
 execute: 
   echo: false
   warning: false
 ---
 
-```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
-```
 
 ```{r}
 #| label: load_packages
@@ -301,6 +303,8 @@ print(fall_plot)
 print(winter_plot)
 
 ```
+
+
 ```{r}
 #| label: fig-price_by_promo_code
 #| fig-cap: "Distribution of Spending With and Without a Promo Code"
@@ -315,7 +319,8 @@ ggplot(
   aes(
     x = promo_code_used,
     y = purchase_amount_usd, 
-    fill = promo_code_used
+    fill = promo_code_used, 
+    table = 
   )
 ) +
   geom_boxplot(
@@ -324,7 +329,8 @@ ggplot(
   ) +
   labs(
     x = "Promo Code Used", 
-    y = "Purchase Amount ($)"
+    y = "Purchase Amount ($)", 
+    title = "Customer Spending With and Without a Promo Code"
   ) +
   scale_fill_manual(
     values = c(
@@ -390,7 +396,8 @@ ggplot(
   ) +
   labs(
     x = "Frequency of Purchases", 
-    y = "Average Previous Purchases"
+    y = "Average Previous Purchases",
+    title = "Purchase Frequency by Gender"
   ) +
   scale_fill_manual(
     values = c(
@@ -419,7 +426,6 @@ ggplot(
 ```
 
 ```{r}
-```{r}
 #| label: select_data
 # Group data by gender and review rating ----
 type_reviews <- shopping_trends_clean %>%
@@ -433,10 +439,10 @@ type_reviews <- shopping_trends_clean %>%
   )
 ```
 
+
 ```{r}
 #| label: fig-gender_review
 #| fig-cap: "Distribution of Review Ratings by Gender"
-#| fig-pos: H
 #| fig-height: 5
 #| fig-alt: "Box plot showing customer review ratings based on their gender"
 #| lst-label: lst-figure4
@@ -446,22 +452,32 @@ ggplot(
   data = type_reviews,
   aes(
     x = gender,
-    y = review_rating
+    y = review_rating, 
   )
 ) +
-  geom_boxplot()+
+  geom_boxplot() +
   labs(
     x = "Gender",
-    y = "Review Rating"
+    y = "Review Rating",
+    title = "Review Ratings by Gender"
   ) +
   theme(
-    plot.title = element_text(hjust = 0.5)
+    plot.title = element_text(
+      hjust = 0.5, 
+      face = "bold"
+    )
   )
 ```
 We wanted to research the difference of what review ratings men and women give after purchasing an item. We believed that women would be more opinionated with their reviews, leaving both higher and lower ratings. However after looking at this graph we were able to find that men tend to leave higher review ratings then women. The data that we did use has a larger sample of men compared to women which could lead to skewed data. However, with the data we have both men and women have similar ratings with men having a slightly higher percent of good ratings. 
+
 
 {{< pagebreak >}}
 # Works Cited
 
 ::: {#refs}
-::: 
+:::
+
+{{< pagebreak >}}
+# Code Appendix
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
