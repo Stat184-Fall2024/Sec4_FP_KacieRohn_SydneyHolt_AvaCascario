@@ -21,8 +21,6 @@ execute:
   warning: false
 ---
 
-```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
-```
 
 ```{r}
 #| label: load_packages
@@ -89,6 +87,7 @@ We are utilizing a data set that we found on Kaggle. Kaggle is a website focused
 
 The data we are utilizing meets the FAIR principles. The data is **findable**, and includes unique identifiers as well rich and substantial metadata. Each case is given an ID number, and there are numerous attributes that they are defined by. The data is **accessible** and can be found in our public repository. We also downloaded the data from Kaggle, which is public and we were able to easily locate it and access it. The data is **interoperable** and uses the R language which is widely known and accepted. This way our data can be exchanged between collaborators and allows for open communication. By citing our sources and explaining the provenance of our data, this ensure our data is also **reusable**. By meeting the FAIR principles we are ensuring that our data is universal, and can be easily understood. 
 
+# **Data Visualizations**
 
 
 ```{r}
@@ -119,26 +118,15 @@ ggplot(
   labs(
     x = "Gender",
     y = "Review Rating",
-    title = "Men vs Women Reviews"
+    title = "Male vs Female Reviews"
   ) +
   theme(
     plot.title = element_text(hjust = 0.5)
   )
 ```
-We wanted to research the difference of what review ratings men and women give after purchasing an item. We believed that women would be more opinionated with their reviews, leaving both higher and lower ratings. However after looking at this graph we were able to find that men tend to leave higher review ratings then women. The data that we did use has a larger sample of men compared to women which could lead to skewed data. However, with the data we have both men and women have similar ratings with men having a slightly higher percent of good ratings. 
 
 
-```{r}
-#| label: summary_table
-# Display regression summary for purchase amount by category ----
-shopping_summary <- lm(formula = purchase_amount_usd ~ category, data = shopping_trends_clean)
-shopping_summary_model <- summary(shopping_summary)
-
-shopping_summary_model$coefficients %>%
-  knitr::kable()
-```
-
-Another data point we wanted to research was the relationship between amount spent and what type of category of item it was. When looking at the regression summary we can see that Outerwear has the most affect on the regression line. This makes sense due to the fact that Outerwear tend to be more expensive items such as jackets and coats. Then Footwear which also tends to be expensive items. Finally Clothing affects the regression line least due to the fact that these items tend to be the least expensive.
+Figure One shows the average review ratings a customer leaves after making a purchase, by Gender. Each customer was able to leave a review rating between 0-5, and we took the average of both the female reviews, and the male reviews to graph. The results we found were different than our initial expectations. We can conclude from Figure One that males tend to leave slighter high reviews than women do. While we thought this to be true before graphing the data, we expected the results to be much more drastic. Females tend to leave, on average, a rating of approximately 3.7, while males leave approximately a 3.8. This is based on the grid lines and Y-axis scale. However, we found that there are also more men in our original data set which can lead to skewed and biased results. The unbalanced number of each gender could be what is making the males average appear higher than the females. Overall, figure one gives us an insight into the reviews typically left by each gender, and whether female or males tend to be "harsher" when reviewing a product. The use of a box plot appropriately displays the data and therefore the difference in average review ratings by gender can be easily compared.
 
 ```{r} 
 #| label: summarize_purchase_data
@@ -151,7 +139,7 @@ shopping_summary <- shopping_trends_clean %>%
     min = min(purchase_amount_usd), 
     Q1 = quantile(purchase_amount_usd, 0.25), 
     median = median(purchase_amount_usd), 
-    Q1 = quantile(purchase_amount_usd, 0.75), 
+    Q3 = quantile(purchase_amount_usd, 0.75), 
     max = max(purchase_amount_usd), 
     mad = mad(purchase_amount_usd), 
     mean = mean(purchase_amount_usd), 
@@ -162,6 +150,8 @@ shopping_summary %>%
   knitr::kable() 
 ```
 
+
+Figure Two shows a summary table including count, minimum, Q1, median, Q3, maximum, median absolute deviation, mean, and standard deviation of clothing category and purchase amount. Each item in the original data set was categorizes into one of the four categories. We can utilize this table to not only see simple statistics, but also the spread and deviations of the data. We were interested in gaining a better understanding of customer spending trends, and therefore we chose this summary table. From the table we can make numerous conclusion. Looking at the count column, we can see that the Clothing category has the highest count, followed by Accessories, Footwear, and Outerwear respectively. This means that out of the entire data set, items that fall under the clothing category are the most popular and most frequently bought. The minimum and maximum price for each item are the same, 20 and 100 respectively. This could mean that the original data set only chose to collect information on items within that price range. We found it interesting that while accessories, clothing, and footwear all have the same median of 60, outerwear has a lower median of just 54.5. This could mean that 
 
 ```{r}
 #| label: group_by_location_season_item
@@ -378,6 +368,8 @@ ggplot(
   )
 ```
 
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+
 While we assumed there would be a greater difference between amount spent by customers when they use a promo code, this plot shows that people without a promo code only spend slightly more. This can possibly be due to confounding variables like the item purchased, where the item was purchased, and how high end the product was. Despite all of those, we found a vary little correlation between purchase amount and whether or not customers used a promo code.  
 
 ```{r}
@@ -441,6 +433,7 @@ ggplot(
     axis.title.x = element_text(size = 8),
     axis.title.y = element_text(size = 8)
   )
+
 ```
 
 ## **References**
