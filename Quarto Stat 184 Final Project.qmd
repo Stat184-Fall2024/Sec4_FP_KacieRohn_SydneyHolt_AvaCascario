@@ -507,3 +507,6 @@ Overall, @fig-gender_review gives us an insight into the reviews typically left 
 # Code Appendix
 ```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
+
+Centers for Disease Control and Prevention.(2024) *Geographic Region* National Center for Health Statistics. <https://www.cdc.gov/nchs/hus/sources-definitions/geographic-region.htm#:~:text=Geographic%20region,Ohio%2C%20South%20Dakota%2C%20and%20Wisconsin>
+
