@@ -32,6 +32,9 @@ library(ggplot2)
 library(dplyr)
 library(knitr)
 library(tinytex)
+library(tidyverse)
+# Tidyverse style guide used
+
 ```
 
 ```{r}
@@ -42,6 +45,7 @@ shopping_trends_raw <- read.csv(
   header = TRUE,
   sep = ","
 )
+
 ```
 
 ```{r}
@@ -74,7 +78,7 @@ shopping_trends_clean <- shopping_trends_raw %>%
 
 # **Research Topic: Latest Customer Shopping Trends**
 
-This research focuses on recent customer shopping trends, a topic that is both familiar and increasingly important to each member of our team. The rise of online shopping, particularly after the Covid-19 pandemic, combined with rapid technological advancements, has made this subject more relevant than ever. Our research will revolve around gaining a better understanding on what customers tend to purchase pertaining to gender, age, geographical location, season, item, price, and other features.Through a series of research questions and data visualizations, we will explore these relationships to uncover insights and draw connections between key attributes. Our goal is to contribute new knowledge to the reader and deepen our understanding of modern consumer behavior.
+This research focuses on recent customer shopping trends, a topic that is both familiar and increasingly important to each member of our team. The rise of online shopping, particularly after the Covid-19 pandemic, combined with rapid technological advancements, has made this subject more relevant than ever. Our research will revolve around gaining a better understanding on what customers tend to purchase pertaining to gender, age, geographical location, season, item, price, and other features. Through a series of research questions and data visualizations, we will explore these relationships to uncover insights and draw connections between key attributes. Our goal is to contribute new knowledge to the reader and deepen our understanding of modern consumer behavior.
 
 # **Research Questions**
 
@@ -89,6 +93,8 @@ We are utilizing a data set that we found on Kaggle. Kaggle is a website focused
 The data we are utilizing meets the FAIR principles. The data is **findable**, and includes unique identifiers as well rich and substantial metadata. Each case is given an ID number, and there are numerous attributes that they are defined by. The data is **accessible** and can be found in our public repository. We also downloaded the data from Kaggle, which is public and we were able to easily locate it and access it. The data is **interoperable** and uses the R language which is widely known and accepted. This way our data can be exchanged between collaborators and allows for open communication. By citing our sources and explaining the provenance of our data, this ensure our data is also **reusable**. By meeting the FAIR principles we are ensuring that our data is universal, and can be easily understood.
 
 # **Data Exploration**
+
+Before creating any visualizations, we created a table of several descriptive statistics of customers' purchase amounts by the category of the item they purchased. @tbl-purchase_summary shows a summary table including *count*, *minimum*, *Q1*, *median*, *Q3*, *maximum*, *median absolute deviation*, *mean*, and *standard deviation* of item category and purchase amount. Each item in the original data set was categorizes into one of the four categories. We can utilize this table to not only see simple statistics, but also the spread and deviations of the data. We were interested in gaining a better understanding of customer spending trends, and therefore we chose this summary table.
 
 ```{r} 
 #| label: tbl-purchase_summary
@@ -123,9 +129,13 @@ shopping_summary <- shopping_trends_clean %>%
 
 shopping_summary %>%
   knitr::kable()
-```
 
-Before creating any visualizations, we created a table of several descriptive statistics of customers' purchase amounts by the category of the item they purchased. @tbl-purchase_summary shows a summary table including *count*, *minimum*, *Q1*, *median*, *Q3*, *maximum*, *median absolute deviation*, *mean*, and *standard deviation* of item category and purchase amount. Each item in the original data set was categorizes into one of the four categories. We can utilize this table to not only see simple statistics, but also the spread and deviations of the data. We were interested in gaining a better understanding of customer spending trends, and therefore we chose this summary table. From the table we can make numerous conclusions. Looking at the count column, we can see that the Clothing category has the highest count, followed by Accessories, Footwear, and Outerwear respectively. This means that out of the entire data set, items that fall under the clothing category are the most popular and most frequently bought. The minimum and maximum price for each item are the same, 20 and 100 respectively. This could mean that the original data set only chose to collect information on items within that price range. We found it interesting that while accessories, clothing, and footwear all have the same median of 60, outerwear has a lower median of just 54.5. This could mean that the middle price of outerwear is generally lower than the other categories, which was surprising as we expected heavy items like boots and coats to be more expensive. This can also be shown through the Outerwear mean which is 57.17284, slightly lower than the other categories. Overall, by looking at the table and each statistic, we can learn about different features and make different conclusions about our data set. Therefore, we introduced the table at the beginning of our data visualizations to give the reader a general understanding of our data.   
+```
+From the table we can make numerous conclusions. Looking at the *count* column, we can see that the Clothing category has the highest *count*, followed by Accessories, Footwear, and Outerwear respectively. This means that out of the entire data set, items that fall under the clothing category are the most popular and most frequently bought. The *minimum* and *maximum* price for each item are the same, 20 and 100 respectively. This could mean that the original data set only chose to collect information on items within that price range. We found it interesting that while Accessories, Clothing, and Footwear all have the same median of 60, Outerwear has a lower median of just 54.5. This could mean that the middle price of outerwear is generally lower than the other categories, which was surprising as we expected heavy items like boots and coats to be more expensive. This can also be shown through the Outerwear *mean* which is 57.17284, slightly lower than the other categories. 
+
+Overall, by looking at the table and each statistic, we can learn about different features and make different conclusions about our data set. Therefore, we introduced the table at the beginning of our data visualizations to give a general understanding of our data.   
+
+# **Data Visualizations**
 
 ```{r}
 #| label: group_by_location_season_item
@@ -140,6 +150,7 @@ item_purchased_data <- shopping_trends_clean %>%
     item_count = n(),
     .groups = "drop"
   )
+
 ```
 
 ```{r}
@@ -197,6 +208,7 @@ state_to_region <- c(
   "Alaska" = "West",
   "Hawaii" = "West"
 )
+
 ```
 
 ```{r}
@@ -206,6 +218,7 @@ item_purchased_data <- item_purchased_data %>%
   mutate(
     region = state_to_region[location]
   )
+
 ```
 
 ```{r}
@@ -222,6 +235,7 @@ fall_data <- item_purchased_data %>%
 
 winter_data <- item_purchased_data %>%
   filter(season == "Winter")
+
 ```
 
 ```{r}
@@ -257,9 +271,9 @@ ggplot(
   ) +
   scale_fill_manual(
     values = c(
-      "Northeast" = "#8DA0CB",
+      "Northeast" = "#66C2A5",
       "South" = "#FC8D62",
-      "Midwest" = "#66C2A5",
+      "Midwest" = "#8DA0CB",
       "West" = "#E78AC3"
     )
   ) +
@@ -285,36 +299,79 @@ ggplot(
     plot.margin = margin(15, 15, 15, 15)
   )
 }
+
 ```
 
-```{r}
-#| label: fig-plot_seasons
-#| fig-cap: "Popularity of Items by Region and Season"
-#| fig-pos: H
-#| fig-height: 5
-#| fig-alt: "Bar charts showing popularity of items purchased by customers of different demographics"
-#| lst-label: lst-figure1
-#| lst-cap: "Code Chunk for Making Figures"
-# Generate and display plots for each season ----
-spring_plot <- plot_items_by_season(spring_data, "Spring")
-summer_plot <- plot_items_by_season(summer_data, "Summer")
-fall_plot <- plot_items_by_season(fall_data, "Fall")
-winter_plot <- plot_items_by_season(winter_data, "Winter")
+The first question that we chose to explore was how different seasons and geographical locations play a part in what items customers are buying. By separating each of the fifty states into their geographical regions, Midwest, Northeast, South, and West, we were able to condense the data and present the information in an easier-to-understand format.
 
-print(spring_plot)
-print(summer_plot)
-print(fall_plot)
+If we compare all four graphs to one another, we are able to see how item popularity changes by both season and region, allowing us to gain a better understanding on clothing trends depending on time of year and location. We can also see what items are bought least and most frequently.
+
+```{r}
+#| label: fig-winter_plot
+#| fig-cap: "Popularity of Items in Winter by Region"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing popularity of items purchased in Winter"
+#| lst-label: lst-winter
+#| lst-cap: "Code Chunk for Winter Plot"
+winter_plot <- plot_items_by_season(winter_data, "Winter")
 print(winter_plot)
 
 ```
+As we looked at @fig-winter_plot, we noted a spike in backpack purchases in the Western region. We assumed that this may have been a cause of back-to-school sales. We also expected to see more spikes in things like t-shirts, skirts, sunglasses, and sandals in the South region due to high temperatures. However, there was not much of an increase in number of these items bought at all. The most striking trend we noticed, was a huge increase in coat purchases in the both the Western and Southern regions This contradicts our hypothesis that coats would be purchased much less frequently due to warm temperatures. The Midwest best represents what we expected to see: a spike in sandals, shorts, sneakers, and t-shirts.
 
-@fig-plot_seasons allows us to see how different seasons and geographical locations play a part into what items customers are buying. By separating each of the fifty states into their geographical region, we were able to condense the data and present the information in an easy-to-understand format. If we compare all four graphs to one another, we can see how item popularity changes by both season and region. This allows us to gain a better understanding on clothing trends depending on time of year and location, and also the most and least frequently bought items. In Figure 1, it shows a spike in popularity of belts, jewelry, shoes, and sweaters in the south. This could be due to many factors, but we could conclude that people in the south tend to purchase new shoes right before summer. We were surprised to see a spike in sweater purchases, as the weather in the south tends to warm up in the spring. We can see that each region has different purchasing patterns in the spring, however we noticed a low number of hat purchases across the board. The longer that we studied the graph, the more differences we noticed in purchasing patterns, both expected and surprising. As we look at Figure 2, we found it interesting to see a spike in backpack purchases in the West region. We assumed that this could be due to back-to-school sales. We also expected to see more spikes in things like t-shirts, skirts, sunglasses, and sandals in the South region due to high temperatures. However, there was not much of an increase in number of these items bought at all. The most striking trend we noticed, was a huge increase in coat purchases in the West region, as well as the South. This contradicts our hypothesis that coats would be purchased much less often due to warm temperatures. The Midwest best represents what we expected to see: a spike in sandals, shorts, sneakers, and t-shirts. Moving on to Figure 3, we were very surprised to see such a large number of shorts purchased in the fall, as temperatures typically begin to cool down at that point in the year. However, we concluded that this also could be due to back-to-school season and temperatures remaining warmer for longer due to climate change. We have noticed throughout each figure thus far that the typical number of items bought from each region is 2, which we found interesting. This could be due simply to the nature of our data set. Finally, looking at Figure 4, we can see that in the Midwest there is a large number of jackets bought in Winter. This is consistent with our original predictions, as temperatures begin to cool down especially in the Midwest. However, we did think there would be a higher number of items such as boots, gloves, scarves, and coats. Overall, we gained a lot of information looking at each region and have a better understanding of how location and time of year affects customer purchases. This allowed us to also look at our data set from a new angle, and the results we got were very interesting!         
+```{r}
+#| label: fig-spring_plot
+#| fig-cap: "Popularity of Items in Spring by Region"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing popularity of items purchased in Spring"
+#| lst-label: lst-spring
+#| lst-cap: "Code Chunk for Spring Plot"
+spring_plot <- plot_items_by_season(spring_data, "Spring")
+print(spring_plot)
 
+```
+@fig-spring_plot shows a spike in popularity of belts, jewelry, shoes, and sweaters in the South. This could be due to many factors, but we could conclude that people in the south tend to purchase new shoes right before summer. We were surprised to see a spike in sweater purchases, as the weather in the south tends to warm up in the spring. We can see that each region has different purchasing patterns in the spring; however, we noticed a low number of hat purchases across the board. The longer that we studied the graph, the more differences we noticed in purchasing patterns, both expected and surprising.
+
+```{r}
+#| label: fig-summer_plot
+#| fig-cap: "Popularity of Items in Summer by Region"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing popularity of items purchased in Summer"
+#| lst-label: lst-summer
+#| lst-cap: "Code Chunk for Summer Plot"
+summer_plot <- plot_items_by_season(summer_data, "Summer")
+print(summer_plot)
+
+```
+Moving on to @fig-summer_plot, we were very surprised to see such a large number of shorts purchased in the fall, for temperatures typically begin to cool down at that point in the year. However, we concluded that this also could be due to back-to-school season and temperatures remaining warmer for longer due to climate change. We have noticed throughout each figure thus far that the typical number of items bought from each region is 2, which we found interesting. This could be due simply to the nature of our data set.
+
+```{r}
+#| label: fig-fall_plot
+#| fig-cap: "Popularity of Items in Fall by Region"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing popularity of items purchased in Fall"
+#| lst-label: lst-fall
+#| lst-cap: "Code Chunk for Fall Plot"
+fall_plot <- plot_items_by_season(fall_data, "Fall")
+print(fall_plot)
+
+```
+Finally, looking at @fig-fall_plot, we see that in the Midwest there is a large number of jackets bought in Winter. This is consistent with our original predictions, as temperatures begin to cool down especially in the Midwest. However, we did think there would be a higher number of items such as boots, gloves, scarves, and coats. 
+
+Overall, we gained a lot of information looking at each region and have a better understanding of how location and time of year affects customer purchases. This allowed us to also look at our data set from a new angle, and the results we got were very interesting!
+
+
+
+After seeing what everyone around the world typically buys, we wanted to explore whether their use of promo codes has an effect on their spending amounts. Our dataset displayed customers responses as to whether or not they used a promo code on their purchases as "Yes" or "No."
 ```{r}
 #| label: fig-price_by_promo_code
 #| fig-cap: "Distribution of Spending With and Without a Promo Code"
 #| fig-pos: H
-#| fig-height: 5
+#| fig-height: 4
 #| fig-alt: "Box plot showing customer spending based on promo codes"
 #| lst-label: lst-figure2
 #| lst-cap: "Code Chunk for Making Figures"
@@ -353,9 +410,11 @@ ggplot(
     ),
     axis.title = element_text(size = 10)
   )
-```
 
-While we assumed there would be a greater difference between amount spent by customers when they use a promo code, this plot shows that people without a promo code only spend slightly more. This can possibly be due to confounding variables like the item purchased, where the item was purchased, and how high end the product was. Despite all of those, we found a vary little correlation between purchase amount and whether or not customers used a promo code.  
+```
+@fig-price_by_promo_code shows the distribution of customer spending by customers who use promo codes and those who do not. Their distributions are compared in terms of their purchase amounts. The box plot clearly conveys the spread and variation in spending for each group, with the box representing the spread between *Q1* and *Q2* and the *median* marked inside each box. 
+
+There are obvious confounding variables that can influence the price of items purchased by customers, such as the item itself, the location of the purchase, or the quality of the product, promo codes are expected to lessen the price of an item. Consequently, we assumed there would be a apparent difference among customers who did use a promo code versus those who did not. However, from @fig-price_by_promo_code, we can see that there is very little variation, with the *median* purchase amount for both groups being about $60 and the overall distribution of spending looking quite similar. Both the green box (for promo code users) and the red box (for non-promo code users) are almost aligned, indicating that the average spending amounts are very comparable. There is only slight variation shown between the quartiles of each group. While the upper quartile of the group that used a promo code was at about $80, that of the group that did not use a promo code was only slightly higher. Overall, we assumed the variation among groups in @fig-price_by_promo_code would be much greater, and we can conclude that the use of promo codes may not substantially alter customer spending habits. 
 
 ```{r}
 #| label: summarize_by_gender_and_frequency
@@ -369,14 +428,17 @@ summary_by_gender_freq <- shopping_trends_clean %>%
     average_previous_purchases = mean(previous_purchases),
     .groups = "drop"
   )
+
 ```
 
 ```{r}
 #| label: filter_NA
 # Filter out N/A frequency of purchases values ----
 summary_by_gender_freq_filtered <- summary_by_gender_freq %>%
-  filter(frequency_of_purchases != "n/a")
+  filter(frequency_of_purchases != "NA")
 ```
+
+The next thing we chose to visualize was the distribution of purchase frequency by gender and the average number of previous purchases. We created a bar chart to effectively compare how often customers shop based on both their gender and how much they have shopped in the past for each frequency group: Weekly, Fortnightly, Bi-weekly, Monthly, Every 3 Months, Quarterly, and Annually. 
 
 ```{r}
 #| label: fig-purchase_frequency
@@ -390,7 +452,18 @@ summary_by_gender_freq_filtered <- summary_by_gender_freq %>%
 ggplot(
   summary_by_gender_freq_filtered,
   aes(
-    x = frequency_of_purchases,
+    x = factor(
+      frequency_of_purchases,
+      levels = c(
+        "Weekly", 
+        "Fortnightly", 
+        "Bi-Weekly", 
+        "Monthly", 
+        "Every 3 Months", 
+        "Quarterly", 
+        "Annually"
+      )
+    ),
     y = average_previous_purchases,
     fill = gender
   )
@@ -430,6 +503,9 @@ ggplot(
   )
 
 ```
+Looking at @fig-purchase_frequency, we see that there is little variation in the shopping frequency between genders. Both males and females tend to have similar shopping patterns, regardless of the frequency with which they shop. Although, after taking a closer look at our dataset, we saw a large variation among the previous purchases of customers, so it would make sense that the bars all appear to be around about 25 previous purchases per gender and frequency pair. The main observation we made from this figure was the spike in previous purchases among females who shop quarterly, or four times a year. It was interesting to see that this combination would have an effect, although it was minimal, on how often these certain females shopped in the past. Our assumption was that the customers that shopped the most frequently would have the highest number of previous purchases. Our assumption that there would be a large variation among male and female shopping trends was also disproven by this visual. 
+
+Despite slight differences like this in some categories, the gender-based distinctions are minimal. Thus, we can conclude from @fig-purchase_frequency that shopping frequency and the number of previous purchases are generally consistent between genders, without any significant disparities.
 
 ```{r}
 #| label: select_data
@@ -443,13 +519,14 @@ type_reviews <- shopping_trends_clean %>%
     gender,
     review_rating
   )
+
 ```
 
 ```{r}
 #| label: fig-gender_review
 #| fig-cap: "Distribution of Review Ratings by Gender"
 #| fig-pos: H
-#| fig-height: 5
+#| fig-height: 3
 #| fig-alt: "Box plot showing customer review ratings based on their gender"
 #| lst-label: lst-figure4
 #| lst-cap: "Code Chunk for Making Figures"
@@ -473,8 +550,15 @@ ggplot(
       face = "bold"
     )
   )
+
 ```
-@fig-gender_review shows the average review ratings a customer leaves after making a purchase, by Gender. Each customer was able to leave a review rating between 0-5, and we took the average of both the female reviews, and the male reviews to graph. The results we found were different than our initial expectations. We can conclude from @fig-gender_review that males tend to leave slighter high reviews than women do. While we thought this to be true before graphing the data, we expected the results to be much more drastic. Females tend to leave, on average, a rating of approximately 3.7, while males leave approximately a 3.8. This is based on the grid lines and Y-axis scale. However, we found that there are also more men in our original data set which can lead to skewed and biased results. The unbalanced number of each gender could be what is making the males average appear higher than the females. Overall, @fig-gender_review gives us an insight into the reviews typically left by each gender, and whether female or males tend to be "harsher" when reviewing a product. The use of a box plot appropriately displays the data and therefore the difference in average review ratings by gender can be easily compared.
+Lastly, @fig-gender_review shows the average review ratings a customer leaves after making a purchase, by gender. Each customer was able to leave a review rating between 0-5, and we took the average of both the female reviews, and the male reviews to graph. The results we found were different than our initial expectations. We can conclude from @fig-gender_review that males tend to leave slighter high reviews than women do. While we thought this to be true before graphing the data, we expected the results to be much more drastic. Females tend to leave, on average, a rating of approximately 3.7, while males leave approximately a 3.8. This is based on the grid lines and Y-axis scale. However, we found that there are also more men in our original data set which can lead to skewed and biased results. The unbalanced number of each gender could be what is making the males average appear higher than the females. 
+
+Overall, @fig-gender_review gives us an insight into the reviews typically left by each gender, and whether female or males tend to be "harsher" when reviewing a product. The use of a box plot appropriately displays the data and therefore the difference in average review ratings by gender can be easily compared. 
+
+# **Conclusion**
+
+Our analysis of recent customer shopping trends opened our eyes to our misconceptions regarding shopping. While we were all familiar and interested in the topic of shopping before, we now know so much more about the online shopping trends of those around us. It was especially interesting for us to see the tendencies of customers all over the world. Visualizing and understanding trends like the ones we uncovered is not only interesting, but it can be a useful tool for others to visualize. For example, it would be beneficial for businesses to understand how frequency and demographics intersect in order to effectively meet the needs of their customers for the growth of their businesses. Overall, our findings underscore the importance of data exploration for the enhancement of decision-making and simply the general knowledge of the public. 
 
 {{< pagebreak >}}
 # Works Cited
@@ -486,6 +570,3 @@ ggplot(
 # Code Appendix
 ```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
-
-Centers for Disease Control and Prevention.(2024) *Geographic Region* National Center for Health Statistics. <https://www.cdc.gov/nchs/hus/sources-definitions/geographic-region.htm#:~:text=Geographic%20region,Ohio%2C%20South%20Dakota%2C%20and%20Wisconsin>
-
